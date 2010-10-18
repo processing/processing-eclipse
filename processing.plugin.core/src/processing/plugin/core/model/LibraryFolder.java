@@ -16,7 +16,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import processing.core.PConstants;
-import processing.plugin.core.ProcessingLog;
+import processing.plugin.core.ProcessingCore;
 import processing.plugin.core.ProcessingUtilities;
 
 /** 
@@ -119,7 +119,7 @@ public class LibraryFolder implements PConstants {
 						if (sanityCheck.equals(potentialName)) {
 							libraries.add(new LibraryFolder(baseFolder));
 						} else {
-							ProcessingLog.logInfo(
+							ProcessingCore.logInfo(
 									"The library \"" + potentialName + "\" cannot be used.\n" +
 									"Library names must contain only basic letters and numbers.\n" +
 									"(ASCII only and no spaces, and it cannot start with a number)"
@@ -228,7 +228,7 @@ public class LibraryFolder implements PConstants {
 		for (String pkg : packages) {
 			LibraryFolder library = LibraryModel.importToLibraryTable.get(pkg);
 			if (library != null) {
-				ProcessingLog.logInfo(
+				ProcessingCore.logInfo(
 						"The library found in " + getPath()
 						+ "conflicts with " + library.getPath()
 						+ "which already defines the package " + pkg + " -- "

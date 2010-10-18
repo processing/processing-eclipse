@@ -22,7 +22,9 @@ import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Plugin;
+import org.eclipse.core.runtime.Status;
 
 import processing.plugin.core.model.LibraryModel;
  
@@ -46,7 +48,6 @@ public final class ProcessingCore extends Plugin {
 	// shared objects
 	private ResourceBundle resourceBundle;
 	private LibraryModel pLibs;
-
 
 	/**
 	 * Creates the Processing core plug-in.
@@ -114,11 +115,33 @@ public final class ProcessingCore extends Plugin {
 			if (folder.exists())
 				return folder;
 		} catch (Exception e) {
-			ProcessingLog.logError(e);
+			ProcessingCore.logError(e);
 		}
 		return null;
 	}
 
+	/**
+	 * Finds and retrieves core.jar in the resource bundle.
+	 * 
+	 * @return File core.jar
+	 */
+	public File getCoreJarFile(){
+		URL coreLoc = getPluginResource("lib");
+		try{
+			File folder = new File(FileLocator.toFileURL(coreLoc).getPath());
+			if (folder.exists()){
+				File core = new File(folder, "core.jar");
+				if (core.exists())
+					return core;
+			}
+		}catch (Exception e) {
+			ProcessingCore.logError(e);
+		}
+		ProcessingCore.logInfo("Something went wrong getting the core.jar file from the Processing plug-in. All sketches will break without this. Please reinstall the plug-in.");
+		return null;
+	}
+
+	
 	/** Returns a file handle to the plug-in's local cache folder. */
 	public File getBuiltInCacheFolder() {
 		return new File(this.getStateLocation().toString());
@@ -163,25 +186,68 @@ public final class ProcessingCore extends Plugin {
 		return filename.endsWith(".pde");
 	}
 	
+	//////// LOGGING STUFF
+	
 	/**
-	 * Finds and retrieves core.jar in the resource bundle.
+	 * Creates a status object to log
 	 * 
-	 * @return File core.jar
+	 * @param severity integer code indicating the type of message
+	 * @param code plug-in-specific status code
+	 * @param message a human readable message
+	 * @param a low-level exception, or null
+	 * @return status object
 	 */
-	public File getCoreJarFile(){
-		URL coreLoc = getPluginResource("lib");
-		try{
-			File folder = new File(FileLocator.toFileURL(coreLoc).getPath());
-			if (folder.exists()){
-				File core = new File(folder, "core.jar");
-				if (core.exists())
-					return core;
-			}
-		}catch (Exception e) {
-			ProcessingLog.logError(e);
-		}
-		ProcessingLog.logInfo("Something went wrong getting the core.jar file from the Processing plug-in. All sketches will break without this. Please reinstall the plug-in.");
-		return null;
+	public static IStatus createStatus(int severity, int code, String message, Throwable exception){
+		return new Status(severity, PLUGIN_ID, code, message, exception);
+	}
+
+	/**
+	 * Adapter method that creates the appropriate status to be logged
+	 * 
+	 * @param severity integer code indicating the type of message
+	 * @param code plug-in-specific status code
+	 * @param message a human readable message
+	 */
+	public static void log(int severity, int code, String message, Throwable exception){
+		log(ProcessingCore.createStatus(severity, code, message, exception));
+	}
+
+	/**
+	 * Convenience method for appending an exception with a message
+	 * 
+	 * @param message a message, preferably something about the problem
+	 * @param exception the problem
+	 */
+	public static void logError(String message, Throwable exception){
+		ProcessingCore.log(IStatus.ERROR, IStatus.OK, message, exception);
+	}
+
+	/**
+	 * Convenience method for appending an unexpected exception to the log file
+	 * 
+	 * @param exception some problem
+	 */
+	public static void logError(Throwable exception){
+		ProcessingCore.logError("Unexpected Exception", exception);
+	}
+
+	/**
+	 * Convenience method for appending a string to the log file.
+	 * Don't use this if there is an error.
+	 * 
+	 * @param message something to append to the log file 
+	 */
+	public static void logInfo(String message){
+		ProcessingCore.log(IStatus.INFO, IStatus.OK, message, null);
+	}
+
+	/**
+	 * Write a status to the log
+	 * 
+	 * @param status
+	 */
+	public static void log(IStatus status){
+		ProcessingCore.getCore().getLog().log(status);
 	}
 
 }

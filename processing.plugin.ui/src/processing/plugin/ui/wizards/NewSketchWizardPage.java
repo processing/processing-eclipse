@@ -31,6 +31,7 @@ import org.eclipse.swt.widgets.Text;
 
 import processing.app.Sketch;
 import processing.plugin.core.ProcessingCorePreferences;
+import processing.plugin.core.ProcessingUtilities;
 
 public class NewSketchWizardPage extends WizardPage {
 
@@ -80,7 +81,7 @@ public class NewSketchWizardPage extends WizardPage {
 		final GridData gridData_3 = new GridData();
 		gridData_3.horizontalSpan = 3;
 		label_3.setLayoutData(gridData_3);
-		label_3.setText("Select the sketchbook folder that will contain the sketch");
+		label_3.setText("Select the folder that will contain the sketch");
 
 		final Label label_4 = new Label(container, SWT.NONE);
 		final GridData gridData_4 = new GridData();
@@ -158,16 +159,31 @@ public class NewSketchWizardPage extends WizardPage {
 		IPath sketchbookLoc = getSketchbookLoc();
 		if (sketchbookLoc == null || !sketchbookLoc.toFile().exists()){
 			setMessage(null);
-			setErrorMessage("Please specify a sketchbook folder.");
+			setErrorMessage("Please specify a folder to contain the sketch.");
 			return;
 		}
 
-		// ensure the sketch isn't already present in the sketchbook
 		String sketchName = getSketchName();
-		File child = (sketchName == null) ? null : new File(sketchbookLoc.toFile(), sketchName);
+		
+		// verify something is in the name
+		if ( sketchName==null || sketchName.isEmpty() ){
+			setMessage("Please specify a sketch name.");
+			setErrorMessage(null);
+			return;
+		}
+		
+		// verify its validity
+		if (!sketchName.equals(ProcessingUtilities.sanitizeName(sketchName))){
+			setErrorMessage("Sketch names cannot start with a letter, contain whitespace or special characters ");
+			return;
+		}
+		
+		File child = new File(sketchbookLoc.toFile(), sketchName);
+		
+		// check for a directory
 		if (child != null && child.exists() && child.isDirectory()){
 			setMessage(null);
-			setErrorMessage("A sketch with that name already exists in that location. Please choose another.");
+			setErrorMessage("A folder with that name already exists in that location. Please choose another.");
 			return;
 		}
 
@@ -189,7 +205,6 @@ public class NewSketchWizardPage extends WizardPage {
 		String text = sketchNameField.getText().trim();
 		if (text.length() == 0)
 			return null;
-		text = Sketch.sanitizeName(text);
 		return text;
 	}
 

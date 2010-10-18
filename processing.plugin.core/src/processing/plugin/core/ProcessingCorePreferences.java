@@ -50,7 +50,7 @@ public class ProcessingCorePreferences {
 		try{
 			this.getStore().flush();
 		} catch (BackingStoreException bse){
-			ProcessingLog.logError("Could not save Processing Core Preferences.", bse);	
+			ProcessingCore.logError("Could not save Processing Core Preferences.", bse);	
 		}
 		// if things have changed, we'll need to rebuild the library list
 		ProcessingCore.getCore().getLibraryModel().rebuildLibraryList();

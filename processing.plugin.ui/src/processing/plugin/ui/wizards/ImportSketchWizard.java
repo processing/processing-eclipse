@@ -55,7 +55,7 @@ public class ImportSketchWizard extends Wizard implements IImportWizard {
 
 	/** Initialize the single page and add it to the wizard. */
 	public void addPages(){
-		setWindowTitle("New Sketch Wizard");
+		setWindowTitle("Import Sketch Wizard");
 		page = new ImportSketchWizardPage();
 		addPage(page);
 	}

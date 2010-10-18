@@ -25,7 +25,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 
 import processing.plugin.core.ProcessingCore;
-import processing.plugin.core.ProcessingLog;
 import processing.plugin.core.ProcessingUtilities;
 import processing.plugin.core.builder.SketchProject;
 import processing.plugin.core.model.LibraryModel;
@@ -54,11 +53,11 @@ public class Exporter {
 		try{
 			sp.fullBuild(null);
 		} catch (CoreException e){
-			ProcessingLog.logError(e);
+			ProcessingCore.logError(e);
 			return false;
 		}
 		if (!sp.wasLastBuildSuccessful()){
-			ProcessingLog.logError("Could not export " + sp.getProject().getName() + 
+			ProcessingCore.logError("Could not export " + sp.getProject().getName() + 
 					". There were erros building the project.", null);
 			return false;
 		}
@@ -106,13 +105,13 @@ public class Exporter {
 							r.getName().subSequence(0, r.getName().lastIndexOf(".")-1)
 							+ "</a> ");
 					} catch (CoreException e) {
-						ProcessingLog.logError("Sketch source files could not be included in export of "
+						ProcessingCore.logError("Sketch source files could not be included in export of "
 						+ sp.getProject().getName() +". Trying to continue export anyway.", e);
 					}
 				}
 			}
 		} catch (CoreException e){
-			ProcessingLog.logError(e); // problem getting members
+			ProcessingCore.logError(e); // problem getting members
 		}
 		
 		// Use separate jarfiles
@@ -135,7 +134,7 @@ public class Exporter {
 				ProcessingUtilities.copyFile(loadingImageCoreResource, new File(exportFolder.getLocation().toFile(), LOADING_IMAGE));
 			} catch (Exception ex) {
 				// This is not expected, and should be reported, because we are about to bail
-				ProcessingLog.logError("Could not access the Processing Plug-in Core resources. " +
+				ProcessingCore.logError("Could not access the Processing Plug-in Core resources. " +
 						"Export aborted.", ex);
 				return false;
 			}
@@ -146,7 +145,7 @@ public class Exporter {
 		try {
 			zipOutputFile = new FileOutputStream(new File(exportFolder.getLocation().toFile(), sp.getProject().getName() + ".jar"));
 		} catch (FileNotFoundException fnfe) {
-			ProcessingLog.logError(" ",fnfe);
+			ProcessingCore.logError(" ",fnfe);
 			return false;
 		}
 	    ZipOutputStream zos = new ZipOutputStream(zipOutputFile);
@@ -171,7 +170,7 @@ public class Exporter {
 					}
 				}
 			} catch (CoreException e){
-				ProcessingLog.logError("Code Folder entries could not be included in export." +
+				ProcessingCore.logError("Code Folder entries could not be included in export." +
 						"Export for " + sp.getProject().getName() + " may not function properly.", e);
 			}
 		}
@@ -227,7 +226,7 @@ public class Exporter {
 		
 		
 		//DEBUG
-		ProcessingLog.logInfo("Could not export " + sp.getProject().getName() 
+		ProcessingCore.logInfo("Could not export " + sp.getProject().getName() 
 				+ " because the exporting applets is not finished.");
 		return false;
 	}
@@ -238,7 +237,7 @@ public class Exporter {
 	 * @return boolean always false
 	 */
 	public static boolean exportApplication(SketchProject sp){ 
-		ProcessingLog.logInfo("Could not export " + sp.getProject().getName() 
+		ProcessingCore.logInfo("Could not export " + sp.getProject().getName() 
 				+ " because exporting applications has not been implemented.");
 		return false; 
 	}

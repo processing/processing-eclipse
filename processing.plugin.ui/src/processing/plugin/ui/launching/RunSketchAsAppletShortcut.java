@@ -28,7 +28,7 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.ide.ResourceUtil;
 
 import processing.plugin.core.builder.SketchProject;
-import processing.plugin.ui.ProcessingLog;
+import processing.plugin.ui.ProcessingPlugin;
 
 public class RunSketchAsAppletShortcut implements ILaunchShortcut {
 
@@ -49,7 +49,7 @@ public class RunSketchAsAppletShortcut implements ILaunchShortcut {
 //			config =wc.doSave();
 			config = wc; // this prevents a run config from being saved and sticking around.
 		} catch (CoreException ce) {
-			ProcessingLog.logError(ce);
+			ProcessingPlugin.logError(ce);
 		}
 		return config;
 	}
@@ -64,10 +64,10 @@ public class RunSketchAsAppletShortcut implements ILaunchShortcut {
 			if (proj.hasNature("processing.plugin.core.sketchNature"))
 				launch(createConfiguration(proj), mode);
 			else 
-				ProcessingLog.logInfo("Sketch could not be launched. "
+				ProcessingPlugin.logInfo("Sketch could not be launched. "
 						+ "The selected project does not have the required Sketch nature.");
 		} catch (CoreException e){
-			ProcessingLog.logError("Launch aborted. CoreException error occured while accessing the project.", e);
+			ProcessingPlugin.logError("Launch aborted. CoreException error occured while accessing the project.", e);
 		}
 	}
 
@@ -79,7 +79,7 @@ public class RunSketchAsAppletShortcut implements ILaunchShortcut {
 				if (proj.isAccessible()){
 					launch(proj, mode);
 				} else {
-					ProcessingLog.logInfo("Sketch could not be launched. " +
+					ProcessingPlugin.logInfo("Sketch could not be launched. " +
 					"Project was not accessible.");
 				}
 //			if (element instanceof JavaProject){
@@ -97,7 +97,7 @@ public class RunSketchAsAppletShortcut implements ILaunchShortcut {
 //			}
 			}else {
 //				System.out.println(element.getClass().getName());
-				ProcessingLog.logInfo("Sketch could not be launched. " +
+				ProcessingPlugin.logInfo("Sketch could not be launched. " +
 						"The launcher could not find a Sketch project associated with the provided selection." + 
 						"Try relaunching from the Processing Perspective, or launching a specific *.pde file.");
 			}
@@ -109,19 +109,19 @@ public class RunSketchAsAppletShortcut implements ILaunchShortcut {
 		IFile file = ResourceUtil.getFile(editor.getEditorInput());
 		
 		if(file == null){
-			ProcessingLog.logInfo("Launch aborted. Editor contents are not part of a Sketch Project in the workspace");
+			ProcessingPlugin.logInfo("Launch aborted. Editor contents are not part of a Sketch Project in the workspace");
 			return;
 		}
 		
 		IProject proj = file.getProject();
 		try{
 			if (!proj.hasNature("processing.plugin.core.sketchNature")){
-				ProcessingLog.logInfo("Sketch could not be launched. The editor contains a file that is not part of a project with a Sketch nature.");
+				ProcessingPlugin.logInfo("Sketch could not be launched. The editor contains a file that is not part of a project with a Sketch nature.");
 				return;
 			}
 			launch(createConfiguration(proj), mode);
 		} catch (CoreException e){
-			ProcessingLog.logError("Launch aborted.", e);
+			ProcessingPlugin.logError("Launch aborted.", e);
 		}
 	}
 

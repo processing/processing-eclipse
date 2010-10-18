@@ -37,7 +37,6 @@ import processing.app.preproc.PdePreprocessor;
 import processing.app.preproc.PreprocessResult;
 
 import processing.plugin.core.ProcessingCore;
-import processing.plugin.core.ProcessingLog;
 import processing.plugin.core.ProcessingUtilities;
 import processing.plugin.core.model.LibraryFolder;
 
@@ -192,14 +191,14 @@ public class SketchBuilder extends IncrementalProjectBuilder{
 
 		IProject sketch = sketchProject.getProject();
 		if ( sketch == null || !sketch.isAccessible() ){
-			ProcessingLog.logError("Sketch is inaccessible. Aborting build process.", null);
+			ProcessingCore.logError("Sketch is inaccessible. Aborting build process.", null);
 			return null;
 		}
 
 		sketchProject.wasLastBuildSuccessful = false; 
 		IFolder buildFolder = sketchProject.getBuildFolder(); // created by the getter
 		if (buildFolder == null){
-			ProcessingLog.logError("Build folder could not be accessed.", null);
+			ProcessingCore.logError("Build folder could not be accessed.", null);
 			return null;
 		}
 
@@ -281,18 +280,18 @@ public class SketchBuilder extends IncrementalProjectBuilder{
 					if(wide > 0) 
 						sketchProject.sketch_width = wide;
 					else
-						ProcessingLog.logInfo("Width cannot be negative. Using default width instead.");
+						ProcessingCore.logInfo("Width cannot be negative. Using default width instead.");
 
 					if (high > 0)
 						sketchProject.sketch_height = high;
 					else 
-						ProcessingLog.logInfo("Height cannot be negative. Using default height instead.");
+						ProcessingCore.logInfo("Height cannot be negative. Using default height instead.");
 
 					if(matches.length==4) sketchProject.renderer = matches[3].trim();
 					// "Actually matches.length should always be 4..." - Processing Sketch.java
 
 				} catch (NumberFormatException e) {
-					ProcessingLog.logInfo(
+					ProcessingCore.logInfo(
 							"Found a reference to size, but it didn't seem to contain numbers. "
 							+ "Will use default sizes instead."
 					);
@@ -402,7 +401,7 @@ public class SketchBuilder extends IncrementalProjectBuilder{
 			reportProblem(re.getMessage(), errorFile, errorLine, true);
 			return null; // bail
 		} catch (Exception e){
-			ProcessingLog.logError(e); 
+			ProcessingCore.logError(e); 
 			return null; // bail
 		}
 
@@ -460,7 +459,7 @@ public class SketchBuilder extends IncrementalProjectBuilder{
 		try{
 			sketchProject.updateClasspathEntries( srcPaths, libPaths);
 		} catch (JavaModelException e) {
-			ProcessingLog.logError("There was a problem setting the compiler class path.", e);
+			ProcessingCore.logError("There was a problem setting the compiler class path.", e);
 			return null; // bail !
 		}
 
@@ -500,7 +499,7 @@ public class SketchBuilder extends IncrementalProjectBuilder{
 			marker.setAttribute(IMarker.SEVERITY, isError ? IMarker.SEVERITY_ERROR : IMarker.SEVERITY_WARNING);
 			if(lineNumber > -1)	marker.setAttribute(IMarker.LINE_NUMBER, lineNumber);
 		} catch(CoreException e){
-			ProcessingLog.logError(e);
+			ProcessingCore.logError(e);
 			return;
 		}
 	}

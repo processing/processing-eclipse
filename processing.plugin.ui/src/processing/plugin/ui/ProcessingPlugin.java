@@ -10,12 +10,15 @@
  */
 package processing.plugin.ui;
 
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.text.rules.RuleBasedScanner;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
-import processing.plugin.ui.processingeditor.ProcessingPartitionScanner;
-import processing.plugin.ui.processingeditor.language.ProcessingCodeScanner;
-import processing.plugin.ui.processingeditor.util.ProcessingColorProvider;
+
+import processing.plugin.ui.editor.ProcessingPartitionScanner;
+import processing.plugin.ui.editor.language.ProcessingCodeScanner;
+import processing.plugin.ui.editor.util.ProcessingColorProvider;
 
 /**
  * Controls Processing Plugin user interface elements.
@@ -30,18 +33,18 @@ public class ProcessingPlugin extends AbstractUIPlugin {
 
 	/** The ID of a planned but unimplemented Processing Perspective */
 	public static final String ID_PERSPECTIVE = PLUGIN_ID + ".sketchingPerspecitve";
-	
+
 	/** The ID of the processing  */
 	public static final String PROCESSING_PARTITIONING = "__processing_partitioning";
-	
+
 	/** The shared plugin instance */
 	private static ProcessingPlugin plugin;
-	
+
 	// Supporting Objects
 	private ProcessingPartitionScanner fPartitionScanner;
 	private ProcessingColorProvider fColorProvider;
 	private ProcessingCodeScanner fCodeScanner;
-	
+
 	/** Initialized the shared instance. */
 	public ProcessingPlugin() {
 		super();
@@ -80,7 +83,7 @@ public class ProcessingPlugin extends AbstractUIPlugin {
 	public static ProcessingPlugin getDefault() {
 		return plugin;
 	}
-	
+
 	/**
 	 * Return a scanner for creating Processing partitions.
 	 * Processing uses Java's commenting scheme, so our partitioner is almost identical. Unlike
@@ -89,26 +92,90 @@ public class ProcessingPlugin extends AbstractUIPlugin {
 	 * 
 	 * @return a scanner for creating Processing partitions
 	 */
-	 public ProcessingPartitionScanner getProcessingPartitionScanner() {
+	public ProcessingPartitionScanner getProcessingPartitionScanner() {
 		return (fPartitionScanner == null) ? new ProcessingPartitionScanner() : fPartitionScanner;
 	}
-	
+
 	/**
 	 * Returns the shared code scanner.
 	 * 
 	 * @return the singleton Processing code scanner
 	 */
-	 public RuleBasedScanner getProcessingCodeScanner() {
+	public RuleBasedScanner getProcessingCodeScanner() {
 		return (fCodeScanner == null) ? new ProcessingCodeScanner(getProcessingColorProvider()) : fCodeScanner;
 	}
-	
+
 	/**
 	 * Returns the shared color provider.
 	 * 
 	 * @return the singleton Processing color provider
 	 */
-	 public ProcessingColorProvider getProcessingColorProvider() {
+	public ProcessingColorProvider getProcessingColorProvider() {
 		return (fColorProvider == null) ? new ProcessingColorProvider() : fColorProvider;
+	}
+
+	///// LOGGING STUFF
+	
+	/**
+	 * Creates a status object to log
+	 * 
+	 * @param severity integer code indicating the type of message
+	 * @param code plug-in-specific status code
+	 * @param message a human readable message
+	 * @param a low-level exception, or null
+	 * @return status object
+	 */
+	public static IStatus createStatus(int severity, int code, String message, Throwable exception){
+		return new Status(severity, PLUGIN_ID, code, message, exception);
+	}
+
+	/**
+	 * Write a status to the log
+	 * 
+	 * @param status
+	 */
+	public static void log(IStatus status){
+		getDefault().getLog().log(status);
+	}
+	
+	/**
+	 * Convenience method for appending a string to the log file.
+	 * Don't use this if there is an error.
+	 * 
+	 * @param message something to append to the log file 
+	 */
+	public static void logInfo(String message){
+		log(IStatus.INFO, IStatus.OK, message, null);
+	}
+
+	/**
+	 * Convenience method for appending an unexpected exception to the log file
+	 * 
+	 * @param exception some problem
+	 */
+	public static void logError(Throwable exception){
+		logError("Unexpected Exception", exception);
+	}
+
+	/**
+	 * Convenience method for appending an exception with a message
+	 * 
+	 * @param message a message, preferably something about the problem
+	 * @param exception the problem
+	 */
+	public static void logError(String message, Throwable exception){
+		log(IStatus.ERROR, IStatus.OK, message, exception);
+	}
+
+	/**
+	 * Adapter method that creates the appropriate status to be logged
+	 * 
+	 * @param severity integer code indicating the type of message
+	 * @param code plug-in-specific status code
+	 * @param message a human readable message
+	 */
+	public static void log(int severity, int code, String message, Throwable exception){
+		log(createStatus(severity, code, message, exception));
 	}
 
 }

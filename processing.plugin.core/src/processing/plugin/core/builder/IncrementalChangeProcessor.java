@@ -19,7 +19,6 @@ import org.eclipse.core.resources.IResourceDeltaVisitor;
 import org.eclipse.core.runtime.CoreException;
 
 import processing.plugin.core.ProcessingCore;
-import processing.plugin.core.ProcessingLog;
 
 /** 
  * Handle an IResourceDelta reported against a Sketch Project.
@@ -95,7 +94,7 @@ public class IncrementalChangeProcessor {
 		try{
 			delta.accept(visitor);
 		} catch (CoreException ex){
-			ProcessingLog.logError(ex);
+			ProcessingCore.logError(ex);
 		}
 		return fullBuildRequired;
 	}

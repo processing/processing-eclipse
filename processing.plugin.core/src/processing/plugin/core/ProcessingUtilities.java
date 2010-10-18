@@ -110,14 +110,14 @@ public class ProcessingUtilities implements PConstants{
 			}
 			return result.toString();
 		} catch (Exception e){ // IOException and CoreException
-			ProcessingLog.logError(e);
+			ProcessingCore.logError(e);
 			return "";
 		} finally {
 			try{
 				if (stream != null)
 					stream.close();
 			} catch (IOException e){
-				ProcessingLog.logError(e);
+				ProcessingCore.logError(e);
 				return "";
 			}
 		}
@@ -246,7 +246,7 @@ public class ProcessingUtilities implements PConstants{
 				}
 			}
 		} catch (IOException e) {
-			ProcessingLog.logInfo("Ignoring " + filename + " (" + e.getMessage() + ")");
+			ProcessingCore.logInfo("Ignoring " + filename + " (" + e.getMessage() + ")");
 		}
 	}
 
@@ -329,7 +329,7 @@ public class ProcessingUtilities implements PConstants{
 					deleteFolderContents(f);
 				} else {
 					// that's odd. could not be deleted and isn't a directory. it might be locked or have permissions issues
-					ProcessingLog.logError(	"Could not delete " + f.getName() 
+					ProcessingCore.logError(	"Could not delete " + f.getName() 
 							+ ". If it causes problems, you may have to manually delete it. You can find it here: " 
 							+ f.getAbsolutePath(), null);
 				}
@@ -479,7 +479,7 @@ public class ProcessingUtilities implements PConstants{
 			return input;
 
 		} catch (IOException e) {
-			ProcessingLog.logError("Could not createInput() for " + file, e);
+			ProcessingCore.logError("Could not createInput() for " + file, e);
 			return null;
 		}
 	}
@@ -594,7 +594,7 @@ public class ProcessingUtilities implements PConstants{
 			bos = null;
 
 			if (!tempFile.renameTo(targetFile)) {
-				ProcessingLog.logError("Could not rename temporary file " +
+				ProcessingCore.logError("Could not rename temporary file " +
 						tempFile.getAbsolutePath(), null);
 				return false;
 			}
@@ -632,12 +632,12 @@ public class ProcessingUtilities implements PConstants{
 			output = null;
 
 			if (!tempFile.renameTo(file)) {
-				ProcessingLog.logError("Could not rename temporary file " +
+				ProcessingCore.logError("Could not rename temporary file " +
 						tempFile.getAbsolutePath(), null);
 			}
 
 		} catch (IOException e) {
-			ProcessingLog.logError("error saving bytes to " + file, e);
+			ProcessingCore.logError("error saving bytes to " + file, e);
 			if (tempFile != null) {
 				tempFile.delete();
 			}
@@ -706,7 +706,7 @@ public class ProcessingUtilities implements PConstants{
 				if (!unit.exists()) unit.mkdirs();
 			}
 		} catch (SecurityException se) {
-			ProcessingLog.logError("You don't have permissions to create " +
+			ProcessingCore.logError("You don't have permissions to create " +
 					file.getAbsolutePath(), se);
 		}
 	}
@@ -1037,7 +1037,7 @@ public class ProcessingUtilities implements PConstants{
 
 					int equals = line.indexOf('=');
 					if (equals == -1) {
-						ProcessingLog.logError("Ignoring illegal line in " 
+						ProcessingCore.logError("Ignoring illegal line in " 
 								+ inputFile + " " + line, null);
 						continue;
 					}
@@ -1138,7 +1138,7 @@ public class ProcessingUtilities implements PConstants{
 		if (dir.exists()) {
 			removeDescendants(dir);
 			if (!dir.delete()) {
-				ProcessingLog.logError("Could not delete " + dir, null);
+				ProcessingCore.logError("Could not delete " + dir, null);
 			}
 		}
 	}
@@ -1159,7 +1159,7 @@ public class ProcessingUtilities implements PConstants{
 			File dead = new File(dir, files[i]);
 			if (!dead.isDirectory()){
 				if (!dead.delete()) 
-					ProcessingLog.logError("Could not delete " + dead, null);
+					ProcessingCore.logError("Could not delete " + dead, null);
 			} else {
 				removeDir(dead);
 			}

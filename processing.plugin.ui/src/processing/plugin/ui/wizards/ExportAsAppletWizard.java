@@ -16,7 +16,8 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.IExportWizard;
 import org.eclipse.ui.IWorkbench;
-import processing.plugin.core.ProcessingLog;
+
+import processing.plugin.core.ProcessingCore;
 import processing.plugin.core.builder.SketchProject;
 import processing.plugin.core.exporter.Exporter;
 
@@ -47,7 +48,7 @@ public class ExportAsAppletWizard extends Wizard implements IExportWizard {
 	public boolean performFinish() {
 		for (SketchProject sp : page.getSelectedProjects()){
 			if (!Exporter.exportApplet(sp)){
-				ProcessingLog.logInfo( "Unable to export " + sp.getProject().getName() 
+				ProcessingCore.logInfo( "Unable to export " + sp.getProject().getName() 
 						+ ". Check the error log for more info.");
 			}
 			
@@ -57,7 +58,7 @@ public class ExportAsAppletWizard extends Wizard implements IExportWizard {
 			try {
 				sp.getProject().refreshLocal(IResource.DEPTH_INFINITE, null);
 			} catch (CoreException e) {
-				ProcessingLog.logError("The workspace could not refresh after the export wizard ran. " 
+				ProcessingCore.logError("The workspace could not refresh after the export wizard ran. " 
 					+ "You may need to manually refresh the workspace to continue.", e);
 			}
 		}

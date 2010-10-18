@@ -20,7 +20,6 @@ import org.eclipse.core.runtime.IPath;
 
 import processing.plugin.core.ProcessingCore;
 import processing.plugin.core.ProcessingCorePreferences;
-import processing.plugin.core.ProcessingLog;
 import processing.plugin.core.ProcessingUtilities;
 
 /** 
@@ -63,7 +62,7 @@ public class LibraryModel {	// naming is hard.
 			File folder = new File(FileLocator.toFileURL(fileLocation).getPath());
 			if (folder.exists()) return folder;
 		} catch (Exception e) {
-			ProcessingLog.logError("Couldn't get Core libraries folder",e);
+			ProcessingCore.logError("Couldn't get Core libraries folder",e);
 		}
 		return null;
 	}
@@ -80,7 +79,7 @@ public class LibraryModel {	// naming is hard.
 
 		if (!libraryJar.exists()) return false;
 		if (!ProcessingUtilities.sanitizeName(name).equals(name)) {
-			ProcessingLog.logInfo(
+			ProcessingCore.logInfo(
 					"The library \"" + name + "\" is being ignored. " +
 					"Library names must contain only basic letters and numbers. " +
 					"(ASCII only and no spaces, and it cannot start with a number)" 
@@ -111,7 +110,7 @@ public class LibraryModel {	// naming is hard.
 			LibraryFolder.list(LibraryModel.getCoreLibsFolder());
 			LibraryFolder.list(LibraryModel.getSketchBookLibsFolder());
 		} catch (IOException e){
-			ProcessingLog.logError("Unhappiness! "
+			ProcessingCore.logError("Unhappiness! "
 					+ "An error occured while loading libraries, "
 					+ " not all the books will be in place.", e
 			);

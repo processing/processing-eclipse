@@ -37,7 +37,6 @@ import org.eclipse.jdt.launching.IVMInstall;
 import org.eclipse.jdt.launching.JavaRuntime;
 
 import processing.plugin.core.ProcessingCore;
-import processing.plugin.core.ProcessingLog;
 
 /** 
  * A nature indicating that the project is a Processing sketch.
@@ -228,7 +227,7 @@ public class SketchProject implements IProjectNature {
 		try{
 			this.project.setPersistentProperty(this.getPropertyName(localName), value);
 		} catch (CoreException e){
-			ProcessingLog.logError(e);
+			ProcessingCore.logError(e);
 		}		
 	}
 
@@ -245,7 +244,7 @@ public class SketchProject implements IProjectNature {
 				code.create(IResource.NONE, true, null);
 			return code;
 		} catch (Exception e){
-			ProcessingLog.logError("Code folder could not be created.", e);
+			ProcessingCore.logError("Code folder could not be created.", e);
 			return null;
 		}
 	}
@@ -258,7 +257,7 @@ public class SketchProject implements IProjectNature {
 				data.create(IResource.NONE, true, null);
 			return data;
 		} catch (Exception e){
-			ProcessingLog.logError("Data folder could not be created.", e);
+			ProcessingCore.logError("Data folder could not be created.", e);
 			return null;
 		}
 	}
@@ -275,7 +274,7 @@ public class SketchProject implements IProjectNature {
 			if(!applet.exists()) applet.create(IResource.NONE, true, null);
 			return project.getFolder("applet");
 		} catch (Exception e){
-			ProcessingLog.logError("Applet folder could not be created.", e);
+			ProcessingCore.logError("Applet folder could not be created.", e);
 			return null;
 		}
 	}
@@ -298,7 +297,7 @@ public class SketchProject implements IProjectNature {
 				return compile;
 			}
 		} catch (Exception e) {
-			ProcessingLog.logError("Compiler folder could not be created.", e);
+			ProcessingCore.logError("Compiler folder could not be created.", e);
 		}
 		return null;
 	}
@@ -320,7 +319,7 @@ public class SketchProject implements IProjectNature {
 				preprocBuildFolder.create(IResource.NONE, true, null);
 			return preprocBuildFolder;
 		} catch (Exception e) {
-			ProcessingLog.logError("Preproc folder could not be created.", e);
+			ProcessingCore.logError("Preproc folder could not be created.", e);
 		}
 		return null;
 	}

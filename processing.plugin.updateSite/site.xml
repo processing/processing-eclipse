@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <feature url="features/processing.plugin_0.3.0.201010182040.jar" id="processing.plugin" version="0.3.0.201010182040">
+   <description name="Processing Update Site" url="http://eclipse.processing.org/plugin">
+      Your one stop shop for more-or-less official Processing plug-ins.
+   </description>
+   <feature url="features/processing.plugin_0.3.0.201010182137.jar" id="processing.plugin" version="0.3.0.201010182137">
       <category name="processing_plug_in"/>
    </feature>
    <category-def name="processing_plug_in" label="Processing Plug-in for Eclipse">

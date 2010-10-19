@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <feature url="features/processing.plugin_0.3.0.201010181627.jar" id="processing.plugin" version="0.3.0.201010181627">
+   <feature url="features/processing.plugin_0.3.0.201010182040.jar" id="processing.plugin" version="0.3.0.201010182040">
       <category name="processing_plug_in"/>
    </feature>
    <category-def name="processing_plug_in" label="Processing Plug-in for Eclipse">

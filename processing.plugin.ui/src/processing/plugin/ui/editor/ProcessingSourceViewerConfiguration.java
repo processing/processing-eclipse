@@ -44,7 +44,7 @@ public class ProcessingSourceViewerConfiguration extends SourceViewerConfigurati
 	}	
 
 	/** a boring default constructor */
-	public ProcessingSourceViewerConfiguration() {	}
+	public ProcessingSourceViewerConfiguration() { }
 	
 	/* Method declared on SourceViewerConfiguration */
 	public IAnnotationHover getAnnotationHover(ISourceViewer sourceViewer) { return new ProcessingAnnotationHover(); }

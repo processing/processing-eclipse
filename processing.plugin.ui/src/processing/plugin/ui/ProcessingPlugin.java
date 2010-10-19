@@ -10,12 +10,19 @@
  */
 package processing.plugin.ui;
 
+import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
+
+import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.text.rules.RuleBasedScanner;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
+import processing.plugin.core.ProcessingCore;
 import processing.plugin.ui.editor.ProcessingPartitionScanner;
 import processing.plugin.ui.editor.language.ProcessingCodeScanner;
 import processing.plugin.ui.editor.util.ProcessingColorProvider;
@@ -31,10 +38,10 @@ public class ProcessingPlugin extends AbstractUIPlugin {
 	/** The ID of the Processing UI Plugin */
 	public static final String PLUGIN_ID = "processing.plugin.ui"; //$NON-NLS-1$
 
-	/** The ID of a planned but unimplemented Processing Perspective */
+	/** The ID of the Processing Perspective */
 	public static final String ID_PERSPECTIVE = PLUGIN_ID + ".sketchingPerspecitve";
 
-	/** The ID of the processing  */
+	/** The ID of the processing partioning scheme */
 	public static final String PROCESSING_PARTITIONING = "__processing_partitioning";
 
 	/** The shared plugin instance */
@@ -114,6 +121,50 @@ public class ProcessingPlugin extends AbstractUIPlugin {
 		return (fColorProvider == null) ? new ProcessingColorProvider() : fColorProvider;
 	}
 
+	///// PLUGIN RESOURCES
+	
+	/** 
+	 * Gets a URL to a file or folder in the plug-in's Resources folder.
+	 * Returns null if the path results in a bad URL.
+	 * 
+	 * @param path relative path from the Resources folder
+	 */
+	public URL getPluginResource(String path) {
+		try{
+			return new URL(this.getBundle().getEntry("/"), "Resources/" + path);
+		} catch (MalformedURLException e){
+			return null;
+		}
+	}
+	
+	/**
+	 * Returns a URL to a file or folder in the plug-in's Resources folder.
+	 * Returns null if the path results in a bad URL.
+	 * 
+	 * @param path relative from the Resources folder
+	 */
+	public URL getPluginResource(IPath path) {
+		return getPluginResource(path.toOSString());
+	}
+	
+	/**
+	 * Resolves the plug-in resources folder to a File and returns it. This will include the
+	 * Processing libraries and the core libraries folder.
+	 * 
+	 * @return File reference to the core resources
+	 */
+	public File getPluginResourceFolder() {
+		URL fileLocation = getPluginResource("");
+		try {
+			File folder = new File(FileLocator.toFileURL(fileLocation).getPath());
+			if (folder.exists())
+				return folder;
+		} catch (Exception e) {
+			ProcessingCore.logError(e);
+		}
+		return null;
+	}
+	
 	///// LOGGING STUFF
 	
 	/**

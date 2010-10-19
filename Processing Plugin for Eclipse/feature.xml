@@ -2,7 +2,7 @@
 <feature
       id="processing.plugin"
       label="Processing Plug-In for Eclipse"
-      version="0.3.0.qualifier"
+      version="0.3.1.qualifier"
       provider-name="Processing.org">
 
    <description url="http://www.processing.org/">

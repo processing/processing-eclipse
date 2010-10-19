@@ -77,6 +77,8 @@ public final class ProcessingCore extends Plugin {
 	// any special initialization and shutdown goes here
 	/* 	public void start(BundleContext context) throws Exception {} */
 	/* 	public void stop(BundleContext context) throws Exception {} */
+
+	///// PLUGIN RESOURCES
 	
 	/** 
 	 * Gets a URL to a file or folder in the plug-in's Resources folder.

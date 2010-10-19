@@ -35,6 +35,7 @@ import org.eclipse.jface.text.rules.WhitespaceRule;
 import org.eclipse.jface.text.rules.WordRule;
 import org.osgi.framework.Bundle;
 
+import processing.plugin.core.ProcessingCore;
 import processing.plugin.ui.ProcessingPlugin;
 import processing.plugin.ui.editor.util.ProcessingColorProvider;
 import processing.plugin.ui.editor.util.ProcessingWhitespaceDetector;
@@ -42,7 +43,7 @@ import processing.plugin.ui.editor.util.ProcessingWordDetector;
 
 public class ProcessingCodeScanner extends RuleBasedScanner {
 
-	private static String keywordsFile = "Resources" + File.separatorChar + "keywords.txt"; // name of the syntax highlighting file
+	private static String keywordsFile = "keywords.txt"; // name of the syntax highlighting file
 
 	private static String[] fgKeywords1; // keywords (new, return, super)
 	private static String[] fgKeywords2; // PDE methods (setup, random, size)
@@ -52,7 +53,7 @@ public class ProcessingCodeScanner extends RuleBasedScanner {
 	private static String[] fgLabels;    // possibly unused? Supporting them here because Processing does.
 	private static String[] fgOperators; // mathematical operators (+, -, *)
 	private static String[] fgInvalids;  // possibly unused? Supporting them here because Processing does.
-		
+
 	/*
 	 * Static initialization block to load Processing Keywords in from keywordsFile
 	 * 
@@ -79,46 +80,45 @@ public class ProcessingCodeScanner extends RuleBasedScanner {
 			InputStream is = getFileInputStream(keywordsFile);
 			InputStreamReader isr = new InputStreamReader(is);
 			BufferedReader reader = new BufferedReader(isr);
-			
+
 			String line = null;
 			while ((line = reader.readLine()) != null){ 
-		        String pieces[] = line.split("\t"); // split the string at \t
-		        if (pieces.length >= 2) { 
-		        	String token = pieces[0].trim(); // ex. PVector
-		        	String coloring = pieces[1].trim(); // ex. KEWORD1
-		        	//String reference = pieces[2].trim(); // used for reference in PDE, unused here
-		        	if (coloring.isEmpty()) // catches operators
-		        		coloring = "OPERATOR";
-		        	if (KeywordMap.containsKey(coloring)){
-		        		KeywordMap.get(coloring).add(token);
-		        	} else {
-		        		Set<String> tokenSet = new HashSet<String>();
-		        		tokenSet.add(token);
-		        		KeywordMap.put(coloring, tokenSet);
-		        	}
-	        		//System.out.println(coloring + " " + token); // to print out a list of what is added
-		        }
+				String pieces[] = line.split("\t"); // split the string at \t
+				if (pieces.length >= 2) { 
+					String token = pieces[0].trim(); // ex. PVector
+					String coloring = pieces[1].trim(); // ex. KEWORD1
+					//String reference = pieces[2].trim(); // used for reference in PDE, unused here
+					if (coloring.isEmpty()) // catches operators
+						coloring = "OPERATOR";
+					if (KeywordMap.containsKey(coloring)){
+						KeywordMap.get(coloring).add(token);
+					} else {
+						Set<String> tokenSet = new HashSet<String>();
+						tokenSet.add(token);
+						KeywordMap.put(coloring, tokenSet);
+					}
+				}
 			}				
 		}
 		catch (Exception e){	
-			e.printStackTrace();
+			ProcessingPlugin.logError("Problem loading syntax highlighting information. Syntax highlighting may be disabled", e);
 		}
 
 		try{
-		fgKeywords1= KeywordMap.containsKey("KEYWORD1") ? (String[]) KeywordMap.get("KEYWORD1").toArray(new String[KeywordMap.get("KEYWORD1").size()]) : new String[] {"test"};
-		fgKeywords2= KeywordMap.containsKey("KEYWORD2") ? (String[]) KeywordMap.get("KEYWORD2").toArray(new String[KeywordMap.get("KEYWORD2").size()]) : new String[] {};
-		fgKeywords3= KeywordMap.containsKey("KEYWORD3") ? (String[]) KeywordMap.get("KEYWORD3").toArray(new String[KeywordMap.get("KEYWORD3").size()]) : new String[] {}; 
-		fgLiterals1= KeywordMap.containsKey("LITERAL1") ? (String[]) KeywordMap.get("LITERAL1").toArray(new String[KeywordMap.get("LITERAL1").size()]) : new String[] {};
-		fgLiterals2= KeywordMap.containsKey("LITERAL2") ? (String[]) KeywordMap.get("LITERAL2").toArray(new String[KeywordMap.get("LITERAL2").size()]) : new String[] {};
-		fgLabels = KeywordMap.containsKey("LABELS") ? (String[]) KeywordMap.get("LABELS").toArray(new String[KeywordMap.get("LABELS").size()]) : new String[] {}; //unused?
-		fgOperators = KeywordMap.containsKey("OPERATOR") ? (String[]) KeywordMap.get("OPERATOR").toArray(new String[KeywordMap.get("OPERATOR").size()]) : new String[] {};
-		fgInvalids = KeywordMap.containsKey("INVALIDS") ? (String[]) KeywordMap.get("INVALIDS").toArray(new String[KeywordMap.get("INVALIDS").size()]) : new String[] {}; // unused?
+			fgKeywords1= KeywordMap.containsKey("KEYWORD1") ? (String[]) KeywordMap.get("KEYWORD1").toArray(new String[KeywordMap.get("KEYWORD1").size()]) : new String[] {};
+			fgKeywords2= KeywordMap.containsKey("KEYWORD2") ? (String[]) KeywordMap.get("KEYWORD2").toArray(new String[KeywordMap.get("KEYWORD2").size()]) : new String[] {};
+			fgKeywords3= KeywordMap.containsKey("KEYWORD3") ? (String[]) KeywordMap.get("KEYWORD3").toArray(new String[KeywordMap.get("KEYWORD3").size()]) : new String[] {}; 
+			fgLiterals1= KeywordMap.containsKey("LITERAL1") ? (String[]) KeywordMap.get("LITERAL1").toArray(new String[KeywordMap.get("LITERAL1").size()]) : new String[] {};
+			fgLiterals2= KeywordMap.containsKey("LITERAL2") ? (String[]) KeywordMap.get("LITERAL2").toArray(new String[KeywordMap.get("LITERAL2").size()]) : new String[] {};
+			fgLabels = KeywordMap.containsKey("LABELS") ? (String[]) KeywordMap.get("LABELS").toArray(new String[KeywordMap.get("LABELS").size()]) : new String[] {}; //unused?
+			fgOperators = KeywordMap.containsKey("OPERATOR") ? (String[]) KeywordMap.get("OPERATOR").toArray(new String[KeywordMap.get("OPERATOR").size()]) : new String[] {};
+			fgInvalids = KeywordMap.containsKey("INVALIDS") ? (String[]) KeywordMap.get("INVALIDS").toArray(new String[KeywordMap.get("INVALIDS").size()]) : new String[] {}; // unused?
 		}
 		catch (Exception e){
-			e.printStackTrace();
+			ProcessingPlugin.logError("Problem building syntax highlighting data structures Syntax highlighting may be disabled.", e);
 		}
 	}
-	
+
 	/**
 	 * Creates a Processing code scanner with the given color provider.
 	 * 
@@ -158,7 +158,7 @@ public class ProcessingCodeScanner extends RuleBasedScanner {
 		for (int i= 0; i < fgKeywords2.length; i++)
 			wordRule.addWord(fgKeywords2[i], keyword2);
 		for (int i= 0; i < fgKeywords3.length; i++)
-				wordRule.addWord(fgKeywords3[i], keyword3);
+			wordRule.addWord(fgKeywords3[i], keyword3);
 		for (int i= 0; i < fgLiterals1.length; i++)
 			wordRule.addWord(fgLiterals1[i], literal1);
 		for (int i= 0; i < fgLiterals2.length; i++)
@@ -176,7 +176,7 @@ public class ProcessingCodeScanner extends RuleBasedScanner {
 		rules.toArray(result);
 		setRules(result);
 	}
-	
+
 	/**
 	 * Concatenates the keyword arrays into one array and returns it.
 	 */
@@ -187,24 +187,22 @@ public class ProcessingCodeScanner extends RuleBasedScanner {
 		System.arraycopy(fgKeywords3, 0, result, fgKeywords1.length+fgKeywords2.length, fgKeywords3.length);
 		return result;
 	}
-	
-	 /**
-	  * Returns a buffered input stream for a file in the plug-in directory.
-	  * 
-	  * @param filename the file to be loaded
-	  * @return BufferedInputStream to read the file with
-	  */
+
+	/**
+	 * Returns a buffered input stream for a file in the plug-in directory.
+	 * 
+	 * @param filename the file to be loaded
+	 * @return BufferedInputStream to read the file with
+	 */
 	public static BufferedInputStream getFileInputStream(String filename) {
-		   Bundle bundle = ProcessingPlugin.getDefault().getBundle();
-		   URL fileLocation;
-		   try {
-		       fileLocation = FileLocator.toFileURL(bundle.getEntry(filename));
-		       BufferedInputStream file = new BufferedInputStream(fileLocation.openStream());
-			   return file;
-		   } catch (IOException e) {
-		       e.printStackTrace();
-		   }
-		   return null;
+		URL fileLocation = ProcessingPlugin.getDefault().getPluginResource(keywordsFile);
+		try {
+			BufferedInputStream fileStream = new BufferedInputStream(FileLocator.toFileURL(fileLocation).openStream());
+			return fileStream;
+		} catch (Exception e) {
+			ProcessingPlugin.logError("Problem loading the language keywords. Syntax Highlighting may be disabled.",e);
+		}
+		return null;
 	}
-	
+
 }

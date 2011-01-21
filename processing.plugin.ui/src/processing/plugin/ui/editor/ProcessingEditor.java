@@ -41,11 +41,12 @@ public class ProcessingEditor extends TextEditor {
 		super.dispose();
 	}
 		
-	public Object getAdapter(Class required){
+	public Object getAdapter(Class required) {
 		if (fProjectionSupport != null) {
 			Object adapter= fProjectionSupport.getAdapter(getSourceViewer(), required);
-			if (adapter != null)
+			if (adapter != null) {
 				return adapter;
+			}
 		}
 		
 		return super.getAdapter(required);
@@ -63,8 +64,8 @@ public class ProcessingEditor extends TextEditor {
 	
 	protected ISourceViewer createSourceViewer(Composite parent, IVerticalRuler ruler, int styles) {
 		
-		fAnnotationAccess= createAnnotationAccess();
-		fOverviewRuler= createOverviewRuler(getSharedColors());
+		fAnnotationAccess = createAnnotationAccess();
+		fOverviewRuler = createOverviewRuler(getSharedColors());
 		
 		ISourceViewer viewer= new ProjectionViewer(parent, ruler, getOverviewRuler(), isOverviewRulerVisible(), styles);
 		

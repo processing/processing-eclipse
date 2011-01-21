@@ -71,7 +71,7 @@ public class ProcessingPlugin extends AbstractUIPlugin {
 			plugin = null;
 			if(fPartitionScanner != null)
 				fPartitionScanner = null;
-			if(fColorProvider != null){
+			if(fColorProvider != null) {
 				fColorProvider.dispose();
 				fColorProvider = null;
 			}
@@ -132,7 +132,7 @@ public class ProcessingPlugin extends AbstractUIPlugin {
 	public URL getPluginResource(String path) {
 		try{
 			return new URL(this.getBundle().getEntry("/"), "Resources/" + path);
-		} catch (MalformedURLException e){
+		} catch (MalformedURLException e) {
 			return null;
 		}
 	}
@@ -176,7 +176,7 @@ public class ProcessingPlugin extends AbstractUIPlugin {
 	 * @param a low-level exception, or null
 	 * @return status object
 	 */
-	public static IStatus createStatus(int severity, int code, String message, Throwable exception){
+	public static IStatus createStatus(int severity, int code, String message, Throwable exception) {
 		return new Status(severity, PLUGIN_ID, code, message, exception);
 	}
 
@@ -185,7 +185,7 @@ public class ProcessingPlugin extends AbstractUIPlugin {
 	 * 
 	 * @param status
 	 */
-	public static void log(IStatus status){
+	public static void log(IStatus status) {
 		getDefault().getLog().log(status);
 	}
 	
@@ -195,7 +195,7 @@ public class ProcessingPlugin extends AbstractUIPlugin {
 	 * 
 	 * @param message something to append to the log file 
 	 */
-	public static void logInfo(String message){
+	public static void logInfo(String message) {
 		log(IStatus.INFO, IStatus.OK, message, null);
 	}
 
@@ -204,7 +204,7 @@ public class ProcessingPlugin extends AbstractUIPlugin {
 	 * 
 	 * @param exception some problem
 	 */
-	public static void logError(Throwable exception){
+	public static void logError(Throwable exception) {
 		logError("Unexpected Exception", exception);
 	}
 
@@ -214,7 +214,7 @@ public class ProcessingPlugin extends AbstractUIPlugin {
 	 * @param message a message, preferably something about the problem
 	 * @param exception the problem
 	 */
-	public static void logError(String message, Throwable exception){
+	public static void logError(String message, Throwable exception) {
 		log(IStatus.ERROR, IStatus.OK, message, exception);
 	}
 
@@ -225,7 +225,7 @@ public class ProcessingPlugin extends AbstractUIPlugin {
 	 * @param code plug-in-specific status code
 	 * @param message a human readable message
 	 */
-	public static void log(int severity, int code, String message, Throwable exception){
+	public static void log(int severity, int code, String message, Throwable exception) {
 		log(createStatus(severity, code, message, exception));
 	}
 

@@ -68,7 +68,7 @@ public class LibraryModel {	// naming is hard.
 	}
 
 	/** @return true if the folder is the root of a valid Processing library folder structure. */
-	public static boolean isLibrary(File rootFolder){
+	public static boolean isLibrary(File rootFolder) {
 		if (rootFolder == null) return false;
 		if (!rootFolder.isDirectory()) return false;
 
@@ -95,12 +95,12 @@ public class LibraryModel {	// naming is hard.
 	//ArrayList<LibraryFolder> contribLibraries;
 
 	/** Creating the model builds the library list. */
-	public LibraryModel(){
+	public LibraryModel() {
 		this.rebuildLibraryList();
 	}
 
 	/** Rebuild the library import tables from scratch. */
-	public void rebuildLibraryList(){
+	public void rebuildLibraryList() {
 		importToLibraryTable = new HashMap<String, LibraryFolder>();
 		try{
 			// LibraryFolder.list() updates the import table as a side affect
@@ -109,7 +109,7 @@ public class LibraryModel {	// naming is hard.
 			//contribLibraries = LibraryFolder.list(LibraryModel.getSketchBookLibsFolder());
 			LibraryFolder.list(LibraryModel.getCoreLibsFolder());
 			LibraryFolder.list(LibraryModel.getSketchBookLibsFolder());
-		} catch (IOException e){
+		} catch (IOException e) {
 			ProcessingCore.logError("Unhappiness! "
 					+ "An error occured while loading libraries, "
 					+ " not all the books will be in place.", e
@@ -123,7 +123,7 @@ public class LibraryModel {	// naming is hard.
 	 * @param pkg a String containing a package name
 	 * @return LibraryFolder for that package, or null if it can't be found 
 	 */
-	public LibraryFolder getLibraryFolder(String pkg){
+	public LibraryFolder getLibraryFolder(String pkg) {
 		return importToLibraryTable.get(pkg);
 	}
 	

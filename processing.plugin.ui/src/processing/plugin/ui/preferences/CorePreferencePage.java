@@ -69,15 +69,15 @@ public class CorePreferencePage extends PreferencePage implements IWorkbenchPref
 		sketchbookPathField = new Text(container, SWT.BORDER);
 		sketchbookPathField.addModifyListener(
 				new ModifyListener() {
-					public void modifyText(ModifyEvent e){
+					public void modifyText(ModifyEvent e) {
 						updatePageComplete();
 					}
 				});
 		sketchbookPathField.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		
 		Button button_1 = new Button(container, SWT.NONE);
-		button_1.addSelectionListener(new SelectionAdapter(){
-			public void widgetSelected(SelectionEvent e){browseForDestinationFolder();}
+		button_1.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e) {browseForDestinationFolder();}
 		});
 		button_1.setText("Browse...");
 		
@@ -86,9 +86,9 @@ public class CorePreferencePage extends PreferencePage implements IWorkbenchPref
 		return container;
 	}
 	
-	public void initContents(){
+	public void initContents() {
 		String sketchbook = ProcessingCorePreferences.current().getSketchbookPathAsString();
-		if(sketchbook != null){
+		if(sketchbook != null) {
 //			System.out.println("INIT: " + sketchbook + ";");
 			sketchbookPathField.setText(sketchbook.toString());
 		} else {
@@ -117,9 +117,9 @@ public class CorePreferencePage extends PreferencePage implements IWorkbenchPref
 	 * @param path the path to be investigated
 	 * @return the path chosen in the dialog box
 	 */
-	private IPath browse(IPath path){
+	private IPath browse(IPath path) {
 		DirectoryDialog dialog = new DirectoryDialog(getShell());
-		if (path != null){
+		if (path != null) {
 			if(path.segmentCount() > 1)
 				dialog.setFilterPath(path.toOSString());
 		}
@@ -135,10 +135,10 @@ public class CorePreferencePage extends PreferencePage implements IWorkbenchPref
 	private void updatePageComplete() {				
 		// check the sketchbook path first
 		IPath sketchbookLoc = resolveLocation();
-		if (sketchbookLoc == null){
+		if (sketchbookLoc == null) {
 			setErrorMessage(null);
 			setMessage("Please specify a sketchbook folder.");
-		} else if (!sketchbookLoc.toFile().exists()){
+		} else if (!sketchbookLoc.toFile().exists()) {
 			// Do not accept invalid paths
 			setValid(false);
 			setMessage(null);

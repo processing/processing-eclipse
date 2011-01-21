@@ -26,7 +26,9 @@ public class ProcessingCorePreferences {
 
 	private static ProcessingCorePreferences current;
 		
-	static { current = new ProcessingCorePreferences(); }
+	static { 
+		current = new ProcessingCorePreferences(); 
+	}
 		
 	protected static final String CORE_PREFERENCES = ProcessingCore.PLUGIN_ID + ".preferences";
 	
@@ -34,22 +36,28 @@ public class ProcessingCorePreferences {
 	protected static final String SKETCHBOOK = CORE_PREFERENCES + ".sketchbook";
 	
 	/** singleton pattern means boring constructors */
-	private ProcessingCorePreferences(){}
+	private ProcessingCorePreferences() {}
 	
 	/** access the singleton object */
-	public static ProcessingCorePreferences current(){ return current; }
+	public static ProcessingCorePreferences current() {
+		return current; 
+	}
 	
 	/** Get the preferences store. */
-	public Preferences getStore(){ return new ConfigurationScope().getNode(CORE_PREFERENCES); }
+	public Preferences getStore() { 
+		return new ConfigurationScope().getNode(CORE_PREFERENCES); 
+	}
 	
 	/** alias to save the preferences changes */
-	public void setStore(){ this.save(); }
+	public void setStore() { 
+		this.save(); 
+	}
 	
 	/** save any preference changes */
-	public void save(){
+	public void save() {
 		try{
 			this.getStore().flush();
-		} catch (BackingStoreException bse){
+		} catch (BackingStoreException bse) {
 			ProcessingCore.logError("Could not save Processing Core Preferences.", bse);	
 		}
 		// if things have changed, we'll need to rebuild the library list
@@ -57,26 +65,31 @@ public class ProcessingCorePreferences {
 	}
 	
 	/** Returns the stored sketchbook path as a string. */
-	public String getSketchbookPathAsString(){	return this.getStore().get(SKETCHBOOK, null); }
+	public String getSketchbookPathAsString() {	
+		return this.getStore().get(SKETCHBOOK, null); 
+	}
 	
 	/** Set the sketchbook path using a path */
-	public void setSketchbookPathWithPath(IPath sketchbookPath){
+	public void setSketchbookPathWithPath(IPath sketchbookPath) {
 		this.setSketchbookPathWithString(sketchbookPath.toOSString());
 	}
 	
 	/** Saves the path to the sketchbook. */
-	public void setSketchbookPathWithString(String sketchbookPath){
+	public void setSketchbookPathWithString(String sketchbookPath) {
 		this.getStore().put(SKETCHBOOK, sketchbookPath);
 		this.save();
 	}
 	
 	/** Returns the path to the sketchbook or null if there is none. */
-	public IPath getSketchbookPath(){ return this.pathOrNull(this.getSketchbookPathAsString()); }
-
+	public IPath getSketchbookPath() { 
+		return this.pathOrNull(this.getSketchbookPathAsString()); 
+	}
 	
 	/** Utility method that returns a path from a string or null */
-	private IPath pathOrNull(String pathString){
-		if (pathString == null) return null;
+	private IPath pathOrNull(String pathString) {
+		if (pathString == null) {
+			return null;
+		}
 		return ( pathString.length() == 0 ) ? null : new Path(pathString);
 	}
 }

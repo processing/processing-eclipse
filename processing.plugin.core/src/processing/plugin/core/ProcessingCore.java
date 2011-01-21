@@ -59,18 +59,18 @@ public final class ProcessingCore extends Plugin {
 	 * Patterned after the JDT, this is public, but I'm not sure why. I thought
 	 * singletons were supposed to have private constructors. [lonnen 09 09 2010]
 	 */
-	public ProcessingCore(){
+	public ProcessingCore() {
 		super();
 		plugin = this;
 		try{
 			this.resourceBundle = ResourceBundle.getBundle(PLUGIN_ID + ".CorePluginResources");
-		} catch (MissingResourceException x){
+		} catch (MissingResourceException x) {
 			this.resourceBundle = null;
 		}
 	}
 
 	/** Returns the single model instance providing access to Processing libraries */
-	public LibraryModel getLibraryModel(){
+	public LibraryModel getLibraryModel() {
 		return (pLibs == null) ? new LibraryModel() : pLibs;
 	}
 	
@@ -89,7 +89,7 @@ public final class ProcessingCore extends Plugin {
 	public URL getPluginResource(String path) {
 		try{
 			return new URL(this.getBundle().getEntry("/"), "Resources/" + path);
-		} catch (MalformedURLException e){
+		} catch (MalformedURLException e) {
 			return null;
 		}
 	}
@@ -127,11 +127,11 @@ public final class ProcessingCore extends Plugin {
 	 * 
 	 * @return File core.jar
 	 */
-	public File getCoreJarFile(){
+	public File getCoreJarFile() {
 		URL coreLoc = getPluginResource("lib");
 		try{
 			File folder = new File(FileLocator.toFileURL(coreLoc).getPath());
-			if (folder.exists()){
+			if (folder.exists()) {
 				File core = new File(folder, "core.jar");
 				if (core.exists())
 					return core;
@@ -150,12 +150,12 @@ public final class ProcessingCore extends Plugin {
 	}
 
 	/** Returns a file handle to the temp folder in the plug-in's local cache*/
-	public File getPluginTempFolder(){
+	public File getPluginTempFolder() {
 		return new File(getBuiltInCacheFolder(), "temp");
 	}
 
 	/** Returns the plug-in's resource bundle */
-	public ResourceBundle getResourceBundle(){
+	public ResourceBundle getResourceBundle() {
 		return resourceBundle;
 	}
 
@@ -167,12 +167,12 @@ public final class ProcessingCore extends Plugin {
 	}
 
 	/** Returns the single instance of the Processing core plug-in runtime class. */
-	public static ProcessingCore getCore(){
+	public static ProcessingCore getCore() {
 		return plugin;
 	}
 	
 	/** Returns true if the resource is a Processing file */	
-	public static boolean isProcessingFile(IResource resource){
+	public static boolean isProcessingFile(IResource resource) {
 		if (resource.getType() == IResource.FILE)
 			return isProcessingFile(resource.getName());
 		return false;
@@ -184,7 +184,7 @@ public final class ProcessingCore extends Plugin {
 	}
 
 	/** Returns true if the file has a Processing extension */
-	public static boolean isProcessingFile(String filename){
+	public static boolean isProcessingFile(String filename) {
 		return filename.endsWith(".pde");
 	}
 	
@@ -199,7 +199,7 @@ public final class ProcessingCore extends Plugin {
 	 * @param a low-level exception, or null
 	 * @return status object
 	 */
-	public static IStatus createStatus(int severity, int code, String message, Throwable exception){
+	public static IStatus createStatus(int severity, int code, String message, Throwable exception) {
 		return new Status(severity, PLUGIN_ID, code, message, exception);
 	}
 
@@ -210,7 +210,7 @@ public final class ProcessingCore extends Plugin {
 	 * @param code plug-in-specific status code
 	 * @param message a human readable message
 	 */
-	public static void log(int severity, int code, String message, Throwable exception){
+	public static void log(int severity, int code, String message, Throwable exception) {
 		log(ProcessingCore.createStatus(severity, code, message, exception));
 	}
 
@@ -220,7 +220,7 @@ public final class ProcessingCore extends Plugin {
 	 * @param message a message, preferably something about the problem
 	 * @param exception the problem
 	 */
-	public static void logError(String message, Throwable exception){
+	public static void logError(String message, Throwable exception) {
 		ProcessingCore.log(IStatus.ERROR, IStatus.OK, message, exception);
 	}
 
@@ -229,7 +229,7 @@ public final class ProcessingCore extends Plugin {
 	 * 
 	 * @param exception some problem
 	 */
-	public static void logError(Throwable exception){
+	public static void logError(Throwable exception) {
 		ProcessingCore.logError("Unexpected Exception", exception);
 	}
 
@@ -239,7 +239,7 @@ public final class ProcessingCore extends Plugin {
 	 * 
 	 * @param message something to append to the log file 
 	 */
-	public static void logInfo(String message){
+	public static void logInfo(String message) {
 		ProcessingCore.log(IStatus.INFO, IStatus.OK, message, null);
 	}
 
@@ -248,7 +248,7 @@ public final class ProcessingCore extends Plugin {
 	 * 
 	 * @param status
 	 */
-	public static void log(IStatus status){
+	public static void log(IStatus status) {
 		ProcessingCore.getCore().getLog().log(status);
 	}
 

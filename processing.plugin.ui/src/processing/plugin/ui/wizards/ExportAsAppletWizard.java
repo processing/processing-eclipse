@@ -39,15 +39,15 @@ public class ExportAsAppletWizard extends Wizard implements IExportWizard {
 	public void init(IWorkbench workbench, IStructuredSelection selection) { }
 
 	/* Loads the single page. */
-	public void addPages(){
+	public void addPages() {
 		page = new ExportAsAppletSelectProjectsWizardPage("Export Sketch Wizard");
 		addPage(page);
 	}
 
 	/* Occurs when user hits the finish button. */
 	public boolean performFinish() {
-		for (SketchProject sp : page.getSelectedProjects()){
-			if (!Exporter.exportApplet(sp)){
+		for (SketchProject sp : page.getSelectedProjects()) {
+			if (!Exporter.exportApplet(sp)) {
 				ProcessingCore.logInfo( "Unable to export " + sp.getProject().getName() 
 						+ ". Check the error log for more info.");
 			}

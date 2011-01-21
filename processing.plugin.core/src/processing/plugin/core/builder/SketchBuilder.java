@@ -121,8 +121,11 @@ public class SketchBuilder extends IncrementalProjectBuilder{
 		// but if there is an old build folder from an earlier session it should still be nuked.
 		// get the handle to it from the project's configuration
 		IFolder build = sketch.getBuildFolder();
-		if (build != null)
-			for( IResource r : build.members()) r.delete(true, monitor);
+		if (build != null) {
+			for( IResource r : build.members()) {
+				r.delete(true, monitor);
+			}
+		}
 
 		// any other cleaning stuff goes here
 		// Eventually, a model (controlled by SketchProject) should manage the markers,
@@ -162,13 +165,14 @@ public class SketchBuilder extends IncrementalProjectBuilder{
 		IResourceDelta delta = this.getDelta(this.getProject());
 		IncrementalChangeProcessor changeProcessor = new IncrementalChangeProcessor(sketchProject);
 		boolean shouldBuild = changeProcessor.resourceChanged(delta);
-		if (shouldBuild) 
+		if (shouldBuild) {
 			fullBuild(sketchProject, monitor);
+		}
 		return null;
 	}
 
 	/** Incremental builds are ignored. */
-	protected IProject[] incrementalBuild(SketchProject sketchProject, IProgressMonitor monitor){
+	protected IProject[] incrementalBuild(SketchProject sketchProject, IProgressMonitor monitor) {
 		//System.err.println("Incremental Build");
 
 		// triggered by launching a sketch or explicitly by a user iff auto build is off
@@ -185,34 +189,34 @@ public class SketchBuilder extends IncrementalProjectBuilder{
 	 * This can be a long running process, so we use a monitor.
 	 */	
 	protected IProject[] fullBuild( SketchProject sketchProject, IProgressMonitor monitor) throws CoreException {
-		//		System.err.println("Full Build of " + sketchProject.getProject().getName());
+		//System.err.println("Full Build of " + sketchProject.getProject().getName());
 
 		clean(monitor); // tabula rasa
 
 		IProject sketch = sketchProject.getProject();
-		if ( sketch == null || !sketch.isAccessible() ){
+		if (sketch == null || !sketch.isAccessible()) {
 			ProcessingCore.logError("Sketch is inaccessible. Aborting build process.", null);
 			return null;
 		}
 
 		sketchProject.wasLastBuildSuccessful = false; 
 		IFolder buildFolder = sketchProject.getBuildFolder(); // created by the getter
-		if (buildFolder == null){
+		if (buildFolder == null) {
 			ProcessingCore.logError("Build folder could not be accessed.", null);
 			return null;
 		}
 
 		IFile mainFile = sketchProject.getMainFile();
-		if (!mainFile.isAccessible()){
+		if (!mainFile.isAccessible()) {
 			reportProblem(
-					"Could not find "+ sketch.getName() + ".pde, please rename your primary sketch file.",
-					sketch, -1, true 
+				"Could not find "+ sketch.getName() + ".pde, please rename your primary sketch file.",
+				sketch, -1, true 
 			);
 			return null;
 		}
 
 		monitor.beginTask("Sketch Build", 40); // not sure how much work to do here
-		if(checkCancel(monitor)) { return null; }
+		if (checkCancel(monitor)) { return null; }
 		/* If the code folder exists:
 		 *   Find any .jar files in it and its subfolders
 		 *     Add their paths to the library jar list for addition to the class path later on 
@@ -222,10 +226,10 @@ public class SketchBuilder extends IncrementalProjectBuilder{
 
 		IFolder codeFolder = sketchProject.getCodeFolder();	// may not exist
 		String[] codeFolderPackages = null;
-		if (codeFolder != null && codeFolder.exists()){
+		if (codeFolder != null && codeFolder.exists()) {
 			String codeFolderClassPath = ProcessingUtilities.contentsToClassPath(codeFolder.getLocation().toFile());
-			for( String s : codeFolderClassPath.split(File.pathSeparator)){
-				if (!s.isEmpty()){
+			for( String s : codeFolderClassPath.split(File.pathSeparator)) {
+				if (!s.isEmpty()) {
 					libraryJarPathList.add(new Path(s).makeAbsolute());
 				}
 			}
@@ -233,7 +237,7 @@ public class SketchBuilder extends IncrementalProjectBuilder{
 		}
 
 		monitor.worked(10);
-		if(checkCancel(monitor)) { return null; }
+		if (checkCancel(monitor)) { return null; }
 		/* concatenate the individual .pde files into one large file. 
 		 * Using temporary session properties attached to IResource files, mark where the file
 		 * starts and ends in the bigCode file. This information is used later for mapping
@@ -243,8 +247,8 @@ public class SketchBuilder extends IncrementalProjectBuilder{
 		StringBuffer bigCode = new StringBuffer();
 		int bigCount = 0; // line count
 
-		for( IResource file : sketch.members()){
-			if("pde".equalsIgnoreCase(file.getFileExtension())){ 
+		for (IResource file : sketch.members()) {
+			if ("pde".equalsIgnoreCase(file.getFileExtension())) { 
 				file.setSessionProperty(new QualifiedName(BUILDER_ID, "preproc start"), bigCount);
 				String content = ProcessingUtilities.readFile((IFile) file);
 				bigCode.append(content);
@@ -255,12 +259,12 @@ public class SketchBuilder extends IncrementalProjectBuilder{
 		}
 
 		monitor.worked(10);
-		if(checkCancel(monitor)) { return null; } 
+		if (checkCancel(monitor)) { return null; } 
 		// Feed everything to the preprocessor
 
 		PdePreprocessor preproc = new PdePreprocessor(sketch.getName(), 4);
 		PreprocessResult result = null;
-		try{
+		try {
 			IFile output = buildFolder.getFile(sketch.getName()+".java");
 			StringWriter stream = new StringWriter();
 
@@ -272,22 +276,26 @@ public class SketchBuilder extends IncrementalProjectBuilder{
 
 			String scrubbed = ProcessingUtilities.scrubComments(stream.toString());
 			String[] matches = ProcessingUtilities.match(scrubbed, ProcessingUtilities.SIZE_REGEX);	
-			if(matches != null){
+			if (matches != null) {
 				try {
 					int wide = Integer.parseInt(matches[1]);
 					int high = Integer.parseInt(matches[2]);
 
-					if(wide > 0) 
+					if (wide > 0) {
 						sketchProject.sketch_width = wide;
-					else
+					} else {
 						ProcessingCore.logInfo("Width cannot be negative. Using default width instead.");
-
-					if (high > 0)
+					}
+					
+					if (high > 0) {
 						sketchProject.sketch_height = high;
-					else 
+					} else { 
 						ProcessingCore.logInfo("Height cannot be negative. Using default height instead.");
-
-					if(matches.length==4) sketchProject.renderer = matches[3].trim();
+					}
+					
+					if (matches.length==4) {
+						sketchProject.renderer = matches[3].trim();
+					}
 					// "Actually matches.length should always be 4..." - Processing Sketch.java
 
 				} catch (NumberFormatException e) {
@@ -300,9 +308,9 @@ public class SketchBuilder extends IncrementalProjectBuilder{
 
 			ByteArrayInputStream inStream = new ByteArrayInputStream(stream.toString().getBytes());
 			try{
-				if (!output.exists()){
+				if (!output.exists()) {
 					output.create(inStream, true, monitor);
-					//TODO resource change listener to move trace back JDT errors
+					//TODO resource change listener to trace back JDT errors
 					//	IWorkspace w = ResourcesPlugin.getWorkspace();
 					//	IResourceChangeListener rcl = new ProblemListener(output);
 					//	w.addResourceChangeListener(rcl);
@@ -316,27 +324,27 @@ public class SketchBuilder extends IncrementalProjectBuilder{
 
 			srcFolderPathList.add(buildFolder.getFullPath());
 
-		} catch(antlr.RecognitionException re){
+		} catch(antlr.RecognitionException re) {
 
 			IResource errorFile = null; // if this remains null, the error is reported back on the sketch itself with no line number
 			int errorLine = re.getLine() - 1;
 
-			for( IResource file : sketch.members()){
-				if("pde".equalsIgnoreCase(file.getFileExtension())){ 
+			for (IResource file : sketch.members()) {
+				if ("pde".equalsIgnoreCase(file.getFileExtension())) { 
 					int low = (Integer) file.getSessionProperty(new QualifiedName(BUILDER_ID, "preproc start"));
 					int high = (Integer) file.getSessionProperty(new QualifiedName(BUILDER_ID, "preproc end"));
-					if( low <= errorLine && high > errorLine){
+					if (low <= errorLine && high > errorLine) {
 						errorFile = file;
 						errorLine -= low;
 						break;
 					}
-				}			
+				}
 			}
 
 			// mark the whole project if no file will step forward.
-			if (errorFile == null){
+			if (errorFile == null) {
 				errorFile = sketch;
-				errorLine = -1;
+				errorLine = - 1;
 			} 
 
 			reportProblem(re.getMessage(), errorFile, errorLine, true);
@@ -349,30 +357,30 @@ public class SketchBuilder extends IncrementalProjectBuilder{
 			String[] matches = ProcessingUtilities.match(tsre.toString(), mess);
 			IResource errorFile = null; 
 			int errorLine = -1;
-			if (matches != null){
+			if (matches != null) {
 				errorLine = Integer.parseInt(matches[1]) - 1;
-				for( IResource file : sketch.members()){
-					if("pde".equalsIgnoreCase(file.getFileExtension())){
+				for (IResource file : sketch.members()) {
+					if ("pde".equalsIgnoreCase(file.getFileExtension())) {
 						int low = (Integer) file.getSessionProperty(new QualifiedName(BUILDER_ID, "preproc start"));
 						int high = (Integer) file.getSessionProperty(new QualifiedName(BUILDER_ID, "preproc end"));
-						if( low <= errorLine && high > errorLine){
+						if (low <= errorLine && high > errorLine) {
 							errorFile = file;
 							errorLine -= low;
 							break;
 						}
-					}			
+					}
 				}
 			} 
 
 			// If no file was found or the regex failed
-			if (errorFile == null){
+			if (errorFile == null) {
 				errorFile = sketch;
 				errorLine = -1;
 			} 
 
 			reportProblem(tsre.getMessage(), errorFile, errorLine, true);		
 			return null; // bail early
-		} catch (RunnerException re){
+		} catch (RunnerException re) {
 			/* 
 			 * This error is not addressed in the PDE. I've only seen it correspond to
 			 * an unclosed, double quote mark (").
@@ -380,11 +388,11 @@ public class SketchBuilder extends IncrementalProjectBuilder{
 			IResource errorFile = null; // if this remains null, the error is reported back on the sketch itself with no line
 			int errorLine = re.getCodeLine() + 1; // always reported 1 line early
 
-			for( IResource file : sketch.members()){
-				if("pde".equalsIgnoreCase(file.getFileExtension())){
+			for( IResource file : sketch.members()) {
+				if ("pde".equalsIgnoreCase(file.getFileExtension())) {
 					int low = (Integer) file.getSessionProperty(new QualifiedName(BUILDER_ID, "preproc start"));
 					int high = (Integer) file.getSessionProperty(new QualifiedName(BUILDER_ID, "preproc end"));
-					if( low <= errorLine && high > errorLine){
+					if (low <= errorLine && high > errorLine) {
 						errorFile = file;
 						errorLine -= low;
 						break;
@@ -393,30 +401,30 @@ public class SketchBuilder extends IncrementalProjectBuilder{
 			}
 
 			// mark the whole project if no file will step forward.
-			if (errorFile == null){
+			if (errorFile == null) {
 				errorFile = sketch;
 				errorLine = -1;
 			}
 
 			reportProblem(re.getMessage(), errorFile, errorLine, true);
 			return null; // bail
-		} catch (Exception e){
+		} catch (Exception e) {
 			ProcessingCore.logError(e); 
 			return null; // bail
 		}
 
 		monitor.worked(10);
-		if(checkCancel(monitor)) { return null; }
+		if (checkCancel(monitor)) { return null; }
 
 		// Library import checking
 
 		boolean importProblems = false;
 		sketchProject.libraryPaths.clear();
-		for (String importPackage : result.extraImports){
+		for (String importPackage : result.extraImports) {
 			int dot = importPackage.lastIndexOf('.');
 			String entry = (dot == -1) ? importPackage : importPackage.substring(0, dot);
 			LibraryFolder libFolder = ProcessingCore.getCore().getLibraryModel().getLibraryFolder(entry);
-			if (libFolder == null ){
+			if (libFolder == null ) {
 				// The user is trying to import something we won't be able to find.
 				reportProblem(
 						"Library import \""+ entry +"\" could not be found. Check the library folder in your sketchbook.",
@@ -430,14 +438,16 @@ public class SketchBuilder extends IncrementalProjectBuilder{
 			sketchProject.libraryPaths.add( new Path(libFolder.getJarPath()) );
 		}
 
-		if (importProblems) return null; // bail after all errors are found.
+		if (importProblems) {
+			return null; // bail after all errors are found.
+		}
 
 		monitor.worked(10);
-		if(checkCancel(monitor)) { return null; } 
+		if (checkCancel(monitor)) { return null; } 
 
 		// Add data folder if there is stuff in it
 		IFolder dataFolder = sketchProject.getDataFolder();
-		if (dataFolder.isAccessible()){
+		if (dataFolder.isAccessible()) {
 			if (dataFolder.members().length > 0) srcFolderPathList.add(dataFolder.getFullPath());
 		}
 
@@ -449,12 +459,16 @@ public class SketchBuilder extends IncrementalProjectBuilder{
 		IPath[] libPaths = new IPath[libraryJarPathList.size()];
 
 		int i=0;
-		for(IPath path : libraryJarPathList) libPaths[i++] = path;
+		for(IPath path : libraryJarPathList) {
+			libPaths[i++] = path;
+		}
 
 		IPath[] srcPaths = new IPath[srcFolderPathList.size()];
 
 		i=0;
-		for(IPath path : srcFolderPathList) srcPaths[i++] = path;
+		for(IPath path : srcFolderPathList) {
+			srcPaths[i++] = path;
+		}
 
 		try{
 			sketchProject.updateClasspathEntries( srcPaths, libPaths);
@@ -470,8 +484,9 @@ public class SketchBuilder extends IncrementalProjectBuilder{
 
 	/** Delete all of the existing P5 problem markers. */
 	protected static void deleteP5ProblemMarkers(IResource resource) throws CoreException{
-		if(resource != null && resource.exists())
+		if (resource != null && resource.exists()) {
 			resource.deleteMarkers(SketchBuilder.PROCESSINGMARKER , true, IResource.DEPTH_INFINITE);
+		}
 	}
 
 	/**
@@ -480,7 +495,7 @@ public class SketchBuilder extends IncrementalProjectBuilder{
 	 * A negative line number indicates that the problem could not be tied back to a specific line.
 	 * Message strings generated by the preprocessor will be translated into a more readable form.
 	 */
-	private void reportProblem(String message, IResource problemFile, int lineNumber, boolean isError){
+	private void reportProblem(String message, IResource problemFile, int lineNumber, boolean isError) {
 		// translate error messages to a friendlier form
 		if (message.equals("expecting RCURLY, found 'null'"))
 			message = "Found one too many { characters without a } to match it.";
@@ -497,8 +512,8 @@ public class SketchBuilder extends IncrementalProjectBuilder{
 			IMarker marker = problemFile.createMarker(SketchBuilder.PREPROCMARKER);
 			marker.setAttribute(IMarker.MESSAGE, message);
 			marker.setAttribute(IMarker.SEVERITY, isError ? IMarker.SEVERITY_ERROR : IMarker.SEVERITY_WARNING);
-			if(lineNumber > -1)	marker.setAttribute(IMarker.LINE_NUMBER, lineNumber);
-		} catch(CoreException e){
+			if (lineNumber > -1)	marker.setAttribute(IMarker.LINE_NUMBER, lineNumber);
+		} catch(CoreException e) {
 			ProcessingCore.logError(e);
 			return;
 		}
@@ -516,9 +531,13 @@ public class SketchBuilder extends IncrementalProjectBuilder{
 	 * @return true if the build is hogging the resource thread
 	 * @throws OperationCanceledException is the user cancels
 	 */
-	private boolean checkCancel(IProgressMonitor monitor){
-		if (monitor.isCanceled()) throw new OperationCanceledException();
-		if (isInterrupted()) return true;
+	private boolean checkCancel(IProgressMonitor monitor) {
+		if (monitor.isCanceled()) { 
+			throw new OperationCanceledException();
+		}
+		if (isInterrupted()) { 
+			return true;
+		}
 		return false;
 	}
 }

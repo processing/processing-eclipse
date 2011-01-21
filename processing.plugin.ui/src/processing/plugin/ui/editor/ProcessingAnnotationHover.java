@@ -19,22 +19,17 @@ import org.eclipse.jface.text.source.ISourceViewer;
 /**
  * Provides the content in the presentation area of a mouse hover popup window.
  * 
- * @author lonnen
- * @see org.eclipse.jface.text.source.IAnnotationHover
+ * @unimplemented
  */
 public class ProcessingAnnotationHover implements IAnnotationHover {
 
-	/* */
 	public String getHoverInfo(ISourceViewer sourceViewer, int lineNumber) {
 		// TODO write useful annotation hover, will require AST
-//		IDocument document= sourceViewer.getDocument();
-//
-//		try {
-//			IRegion info= document.getLineInformation(lineNumber);
-//			return document.get(info.getOffset(), info.getLength());
-//		} catch (BadLocationException x) { }
-		
+		//IDocument document= sourceViewer.getDocument();
+		//try {
+		//  IRegion info= document.getLineInformation(lineNumber);
+		//  return document.get(info.getOffset(), info.getLength());
+		//} catch (BadLocationException x) { }
 		return null;
 	}
-
 }

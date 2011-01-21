@@ -49,7 +49,7 @@ public class NewSketchWizard extends Wizard implements INewWizard {
 	private IProject project;
 
 	/** Constructor */
-	public NewSketchWizard(){}
+	public NewSketchWizard() {}
 	
 	/** There is not init code. */
 	public void init(IWorkbench workbench, IStructuredSelection selection) {}
@@ -70,7 +70,7 @@ public class NewSketchWizard extends Wizard implements INewWizard {
 		final IProjectDescription sketchDescription = ResourcesPlugin.getWorkspace().newProjectDescription(project.getName());
 		sketchDescription.setLocation(sketchbookPath);
 		
-		WorkspaceModifyOperation op = new WorkspaceModifyOperation(){
+		WorkspaceModifyOperation op = new WorkspaceModifyOperation() {
 			protected void execute(IProgressMonitor monitor) throws CoreException{
 				createNewProject(sketchDescription, project, monitor);
 			}
@@ -78,11 +78,11 @@ public class NewSketchWizard extends Wizard implements INewWizard {
 		
 		try{
 			getContainer().run(true, true, op);
-		} catch (InvocationTargetException e){
+		} catch (InvocationTargetException e) {
 			Throwable realException = e.getTargetException();
 			MessageDialog.openError(getShell(), "Error!", realException.getMessage());
 			return false;
-		} catch (InterruptedException e){ // "shut it down"
+		} catch (InterruptedException e) { // "shut it down"
 			return false;
 		}
 		
@@ -108,7 +108,7 @@ public class NewSketchWizard extends Wizard implements INewWizard {
 			proj.create(description, new SubProgressMonitor(monitor, 1));			
 			proj.open(IResource.BACKGROUND_REFRESH, new SubProgressMonitor(monitor, 1));
 
-			if (monitor.isCanceled()){throw new OperationCanceledException();}
+			if (monitor.isCanceled()) {throw new OperationCanceledException();}
 
 			IContainer container = (IContainer) proj;
 			//create the default sketch file
@@ -134,16 +134,16 @@ public class NewSketchWizard extends Wizard implements INewWizard {
 	 */
 	private void addFileToContainer(IContainer container, Path path, InputStream contentStream, IProgressMonitor monitor) throws CoreException{
 		final IFile file = container.getFile(path);
-		if (contentStream == null){
+		if (contentStream == null) {
 			contentStream = new ByteArrayInputStream(
-					("void setup(){ \n" +
+					("void setup() { \n" +
 					"\tsize(200,200); \n" +
 					"} \n \n" +
-					"void draw(){ \n" +
+					"void draw() { \n" +
 					"\tellipse(50,50,80,80); \n" +
 					"} ").getBytes());
 		}
-		if(file.exists()){
+		if(file.exists()) {
 			file.setContents(contentStream, true, true, monitor);
 		} else{ 
 			file.create(contentStream, true, monitor); 
@@ -154,7 +154,7 @@ public class NewSketchWizard extends Wizard implements INewWizard {
 	/**
 	 * Initializes the single page and adds it to the wizard.
 	 */
-	public void addPages(){
+	public void addPages() {
 		setWindowTitle("New Sketch Wizard");
 		page = new NewSketchWizardPage();
 		addPage(page);

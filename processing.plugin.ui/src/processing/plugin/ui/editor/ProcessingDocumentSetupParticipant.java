@@ -22,7 +22,7 @@ import processing.plugin.ui.editor.ProcessingPartitionScanner;
 public class ProcessingDocumentSetupParticipant implements IDocumentSetupParticipant {
 
 	/** Empty Constructor */
-	public ProcessingDocumentSetupParticipant(){}
+	public ProcessingDocumentSetupParticipant(){ }
 	
 	/** Set up the document*/
 	public void setup(IDocument document) {

@@ -82,7 +82,7 @@ public class ProcessingCodeScanner extends RuleBasedScanner {
 			BufferedReader reader = new BufferedReader(isr);
 
 			String line = null;
-			while ((line = reader.readLine()) != null){ 
+			while ((line = reader.readLine()) != null) { 
 				String pieces[] = line.split("\t"); // split the string at \t
 				if (pieces.length >= 2) { 
 					String token = pieces[0].trim(); // ex. PVector
@@ -90,7 +90,7 @@ public class ProcessingCodeScanner extends RuleBasedScanner {
 					//String reference = pieces[2].trim(); // used for reference in PDE, unused here
 					if (coloring.isEmpty()) // catches operators
 						coloring = "OPERATOR";
-					if (KeywordMap.containsKey(coloring)){
+					if (KeywordMap.containsKey(coloring)) {
 						KeywordMap.get(coloring).add(token);
 					} else {
 						Set<String> tokenSet = new HashSet<String>();
@@ -100,7 +100,7 @@ public class ProcessingCodeScanner extends RuleBasedScanner {
 				}
 			}				
 		}
-		catch (Exception e){	
+		catch (Exception e) {	
 			ProcessingPlugin.logError("Problem loading syntax highlighting information. Syntax highlighting may be disabled", e);
 		}
 
@@ -114,7 +114,7 @@ public class ProcessingCodeScanner extends RuleBasedScanner {
 			fgOperators = KeywordMap.containsKey("OPERATOR") ? (String[]) KeywordMap.get("OPERATOR").toArray(new String[KeywordMap.get("OPERATOR").size()]) : new String[] {};
 			fgInvalids = KeywordMap.containsKey("INVALIDS") ? (String[]) KeywordMap.get("INVALIDS").toArray(new String[KeywordMap.get("INVALIDS").size()]) : new String[] {}; // unused?
 		}
-		catch (Exception e){
+		catch (Exception e) {
 			ProcessingPlugin.logError("Problem building syntax highlighting data structures Syntax highlighting may be disabled.", e);
 		}
 	}
@@ -180,7 +180,7 @@ public class ProcessingCodeScanner extends RuleBasedScanner {
 	/**
 	 * Concatenates the keyword arrays into one array and returns it.
 	 */
-	public final static String[] getKeywords(){
+	public final static String[] getKeywords() {
 		String[] result = new String[fgKeywords1.length + fgKeywords2.length + fgKeywords3.length];
 		System.arraycopy(fgKeywords1, 0, result, 0, fgKeywords1.length);
 		System.arraycopy(fgKeywords2, 0, result, fgKeywords1.length, fgKeywords2.length);

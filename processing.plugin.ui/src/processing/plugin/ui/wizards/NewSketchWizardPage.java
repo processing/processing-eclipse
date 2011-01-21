@@ -66,7 +66,7 @@ public class NewSketchWizardPage extends WizardPage {
 
 		sketchNameField = new Text(container, SWT.BORDER);
 		sketchNameField.addModifyListener(new ModifyListener() {
-			public void modifyText(ModifyEvent e){
+			public void modifyText(ModifyEvent e) {
 				updatePageComplete();
 			}
 		});
@@ -92,15 +92,15 @@ public class NewSketchWizardPage extends WizardPage {
 		sketchbookPathField = new Text(container, SWT.BORDER);
 		sketchbookPathField.addModifyListener(
 				new ModifyListener() {
-					public void modifyText(ModifyEvent e){
+					public void modifyText(ModifyEvent e) {
 						updatePageComplete();
 					}
 				});
 		sketchbookPathField.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL));
 
 		final Button button_1 = new Button(container, SWT.NONE);
-		button_1.addSelectionListener(new SelectionAdapter(){
-			public void widgetSelected(SelectionEvent e){browseForDestinationFolder();
+		button_1.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e) {browseForDestinationFolder();
 			}
 		});
 		button_1.setText("Browse...");
@@ -137,9 +137,9 @@ public class NewSketchWizardPage extends WizardPage {
 	 * @param path the path to be investigated
 	 * @return the path chosen in the dialog box
 	 */
-	private IPath browse(IPath path){
+	private IPath browse(IPath path) {
 		DirectoryDialog dialog = new DirectoryDialog(getShell());
-		if (path != null){
+		if (path != null) {
 			if(path.segmentCount() > 1)
 				dialog.setFilterPath(path.toOSString());
 		}
@@ -157,7 +157,7 @@ public class NewSketchWizardPage extends WizardPage {
 
 		// check the sketchbook path first
 		IPath sketchbookLoc = getSketchbookLoc();
-		if (sketchbookLoc == null || !sketchbookLoc.toFile().exists()){
+		if (sketchbookLoc == null || !sketchbookLoc.toFile().exists()) {
 			setMessage(null);
 			setErrorMessage("Please specify a folder to contain the sketch.");
 			return;
@@ -166,14 +166,14 @@ public class NewSketchWizardPage extends WizardPage {
 		String sketchName = getSketchName();
 		
 		// verify something is in the name
-		if ( sketchName==null || sketchName.isEmpty() ){
+		if ( sketchName==null || sketchName.isEmpty() ) {
 			setMessage("Please specify a sketch name.");
 			setErrorMessage(null);
 			return;
 		}
 		
 		// verify its validity
-		if (!sketchName.equals(ProcessingUtilities.sanitizeName(sketchName))){
+		if (!sketchName.equals(ProcessingUtilities.sanitizeName(sketchName))) {
 			setErrorMessage("Sketch names cannot start with a letter, contain whitespace or special characters ");
 			return;
 		}
@@ -181,7 +181,7 @@ public class NewSketchWizardPage extends WizardPage {
 		File child = new File(sketchbookLoc.toFile(), sketchName);
 		
 		// check for a directory
-		if (child != null && child.exists() && child.isDirectory()){
+		if (child != null && child.exists() && child.isDirectory()) {
 			setMessage(null);
 			setErrorMessage("A folder with that name already exists in that location. Please choose another.");
 			return;

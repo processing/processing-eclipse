@@ -32,7 +32,7 @@ import processing.plugin.ui.ProcessingPlugin;
 
 public class RunSketchAsAppletShortcut implements ILaunchShortcut {
 
-	protected ILaunchConfiguration createConfiguration(IProject project){
+	protected ILaunchConfiguration createConfiguration(IProject project) {
 		if (project == null) return null;
 		SketchProject sketch = SketchProject.forProject(project);
 		ILaunchConfiguration config = null;
@@ -54,19 +54,19 @@ public class RunSketchAsAppletShortcut implements ILaunchShortcut {
 		return config;
 	}
 
-	protected ILaunchConfigurationType getConfigurationType(){
+	protected ILaunchConfigurationType getConfigurationType() {
 		ILaunchManager lm = DebugPlugin.getDefault().getLaunchManager();
 		return lm.getLaunchConfigurationType(IJavaLaunchConfigurationConstants.ID_JAVA_APPLET);
 	}
 	
-	public void launch(IProject proj, String mode){
+	public void launch(IProject proj, String mode) {
 		try{
 			if (proj.hasNature("processing.plugin.core.sketchNature"))
 				launch(createConfiguration(proj), mode);
 			else 
 				ProcessingPlugin.logInfo("Sketch could not be launched. "
 						+ "The selected project does not have the required Sketch nature.");
-		} catch (CoreException e){
+		} catch (CoreException e) {
 			ProcessingPlugin.logError("Launch aborted. CoreException error occured while accessing the project.", e);
 		}
 	}
@@ -74,21 +74,21 @@ public class RunSketchAsAppletShortcut implements ILaunchShortcut {
 	public void launch(ISelection selection, String mode) {
 		if (selection instanceof IStructuredSelection) {
 			Object element = ((IStructuredSelection)selection).getFirstElement();
-			if (element instanceof IResource){
+			if (element instanceof IResource) {
 				IProject proj = ((IResource)element).getProject();
-				if (proj.isAccessible()){
+				if (proj.isAccessible()) {
 					launch(proj, mode);
 				} else {
 					ProcessingPlugin.logInfo("Sketch could not be launched. " +
 					"Project was not accessible.");
 				}
-//			if (element instanceof JavaProject){
+//			if (element instanceof JavaProject) {
 //				/* The Java perspective hijacks Processing sketches and reports them through the selection
 //				 * interface as JavaProjects instead of IProjects or IResources or SketchProjects, all of
 //				 * which they happen to be, so I'm stuck accessing restricted code. Great. 
 //				 */
 //				IProject project = ((JavaProject)element).getProject();
-//				if(project.isAccessible()){
+//				if(project.isAccessible()) {
 //					launch( project, mode);
 //				} else {
 //					ProcessingLog.logInfo("Sketch could not be launched. " +
@@ -108,19 +108,19 @@ public class RunSketchAsAppletShortcut implements ILaunchShortcut {
 	public void launch(IEditorPart editor, String mode) {
 		IFile file = ResourceUtil.getFile(editor.getEditorInput());
 		
-		if(file == null){
+		if(file == null) {
 			ProcessingPlugin.logInfo("Launch aborted. Editor contents are not part of a Sketch Project in the workspace");
 			return;
 		}
 		
 		IProject proj = file.getProject();
 		try{
-			if (!proj.hasNature("processing.plugin.core.sketchNature")){
+			if (!proj.hasNature("processing.plugin.core.sketchNature")) {
 				ProcessingPlugin.logInfo("Sketch could not be launched. The editor contains a file that is not part of a project with a Sketch nature.");
 				return;
 			}
 			launch(createConfiguration(proj), mode);
-		} catch (CoreException e){
+		} catch (CoreException e) {
 			ProcessingPlugin.logError("Launch aborted.", e);
 		}
 	}

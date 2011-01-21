@@ -65,15 +65,15 @@ public class ImportSketchWizardPage extends WizardPage {
 		sketchPathField = new Text(container, SWT.BORDER);
 		sketchPathField.addModifyListener(
 			new ModifyListener() {
-				public void modifyText(ModifyEvent e){
+				public void modifyText(ModifyEvent e) {
 					updatePageComplete();
 				}
 			});
 		sketchPathField.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
 		final Button browseButton = new Button(container, SWT.NONE);
-		browseButton.addSelectionListener(new SelectionAdapter(){
-			public void widgetSelected(SelectionEvent e){
+		browseButton.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e) {
 				browseForDestinationFolder();
 			}
 		});
@@ -117,9 +117,9 @@ public class ImportSketchWizardPage extends WizardPage {
 	 * @param path the path to be investigated
 	 * @return the chosen path from the dialog box
 	 */
-	private IPath browse(IPath path){
+	private IPath browse(IPath path) {
 		DirectoryDialog dialog = new DirectoryDialog(getShell());
-		if (path != null){
+		if (path != null) {
 			if(path.segmentCount() > 1)
 				dialog.setFilterPath(path.toOSString());
 		}
@@ -143,7 +143,7 @@ public class ImportSketchWizardPage extends WizardPage {
 		if (sketchLoc == null 
 				|| !sketchLoc.toFile().exists()
 				|| (sketchbook != null 
-						&& sketchLoc.makeAbsolute().equals(sketchbook.makeAbsolute()))){
+						&& sketchLoc.makeAbsolute().equals(sketchbook.makeAbsolute()))) {
 			setErrorMessage(null);
 			setMessage("Please specify a folder containing a sketch.");
 			return;
@@ -154,7 +154,7 @@ public class ImportSketchWizardPage extends WizardPage {
 		String sketchName = sketchLoc.lastSegment();
 		//System.out.println(sketchName + ".pde");
 		File mainFile = new File(sketchLoc.toFile(), sketchName+".pde");
-		if(!mainFile.exists()){
+		if(!mainFile.exists()) {
 			setMessage(null);
 			setErrorMessage("The sketch folder does not appear to be valid. " +
 					"Could not find " + sketchName + ".pde");

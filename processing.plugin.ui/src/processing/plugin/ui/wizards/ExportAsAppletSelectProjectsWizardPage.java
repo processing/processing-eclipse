@@ -39,7 +39,7 @@ public class ExportAsAppletSelectProjectsWizardPage extends WizardPage {
 
 		ArrayList<ProjectTableEntryModel> entries;
 
-		public ProjectTableContentProvider(){
+		public ProjectTableContentProvider() {
 			this.updateProjectList();
 		}
 		
@@ -55,13 +55,13 @@ public class ExportAsAppletSelectProjectsWizardPage extends WizardPage {
 		}
 
 		/** Grabs all open sketch projects from the workplace and adds them to the array */
-		public void updateProjectList(){
+		public void updateProjectList() {
 			entries = new ArrayList<ProjectTableEntryModel>();
 			IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
-			for(IProject p: projects){
+			for(IProject p: projects) {
 				if (p == null) break;
 				if (!p.isAccessible()) break;
-				if (SketchProject.isSketchProject(p)){
+				if (SketchProject.isSketchProject(p)) {
 					ProjectTableEntryModel entry = new ProjectTableEntryModel();
 					if (entry.setEntry(p)) entries.add(entry);
 				}
@@ -75,23 +75,23 @@ public class ExportAsAppletSelectProjectsWizardPage extends WizardPage {
 
 		private SketchProject sp;
 
-		public ProjectTableEntryModel(){}
+		public ProjectTableEntryModel() {}
 
-		public boolean setEntry(IProject project){
+		public boolean setEntry(IProject project) {
 			SketchProject candidate = SketchProject.forProject(project);
 			return setEntry(candidate);
 		}
 
-		public boolean setEntry(SketchProject project){
+		public boolean setEntry(SketchProject project) {
 			if (project == null) return false;
 			sp = project;
 //			System.out.println("Adding: " + project.getProject().getName());
 			return true;
 		}
 
-		public SketchProject getProject(){	return sp; }
+		public SketchProject getProject() {	return sp; }
 
-		public String getAdditionalMessage(){
+		public String getAdditionalMessage() {
 			return (sp.wasLastBuildSuccessful()) ? "" : "Warning: last build unsuccessful. May not export.";
 		}
 
@@ -182,7 +182,7 @@ public class ExportAsAppletSelectProjectsWizardPage extends WizardPage {
 	 * <p>
 	 * {@inheritDoc} 
 	 */
-	public void setVisible(boolean visible){
+	public void setVisible(boolean visible) {
 		if (visible) projectTable.setInput(visible);
 		/* setInput needs an object, but it really doesn't matter what is
 		 * handed to it as long as the content provider is the private class 
@@ -191,10 +191,10 @@ public class ExportAsAppletSelectProjectsWizardPage extends WizardPage {
 		super.setVisible(visible);
 	}
 	
-	public SketchProject[] getSelectedProjects(){
+	public SketchProject[] getSelectedProjects() {
 		Object[] elements = projectTable.getCheckedElements();
 		SketchProject[] selectedProjects = new SketchProject[elements.length];
-		for(int i=0; i<elements.length; i++){
+		for(int i=0; i<elements.length; i++) {
 			 selectedProjects[i] = ((ProjectTableEntryModel) elements[i]).getProject();
 		}
 		return selectedProjects;

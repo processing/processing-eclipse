@@ -78,7 +78,7 @@ public class SketchProject implements IProjectNature {
 	 * Return the SketchProject associated with the given IProject, or null
 	 * if the project is not associated with a SketchProject.
 	 */
-	public static SketchProject forProject(IProject project){
+	public static SketchProject forProject(IProject project) {
 		IProjectNature nature = null;
 		try{
 			nature = project.getNature(NATURE_ID);
@@ -89,7 +89,7 @@ public class SketchProject implements IProjectNature {
 	}
 
 	/** True if the project has the SketchProject nature, false otherwise. */
-	public static boolean isSketchProject(IProject project){
+	public static boolean isSketchProject(IProject project) {
 		return SketchProject.forProject(project) != null;
 	}
 
@@ -100,7 +100,7 @@ public class SketchProject implements IProjectNature {
 	 * Project nature is added second to ensure the builders are configured in the correct
 	 * order.
 	 */
-	public static void addSketchNature(IProject project) throws CoreException{
+	public static void addSketchNature(IProject project) throws CoreException {
 		if (!project.isOpen())
 			return;
 
@@ -118,7 +118,7 @@ public class SketchProject implements IProjectNature {
 	}
 
 	/** Removes the sketch and java natures from a project */
-	public static void removeSketchNature(IProject project) throws CoreException{
+	public static void removeSketchNature(IProject project) throws CoreException {
 		if (!project.isOpen())	return;
 		if (!SketchProject.isSketchProject(project)) return;
 
@@ -148,7 +148,7 @@ public class SketchProject implements IProjectNature {
 	}
 
 	/** Access method for this nature's java project */
-	public IJavaProject getJavaProject(){
+	public IJavaProject getJavaProject() {
 		return JavaCore.create(project);
 	}
 
@@ -214,7 +214,7 @@ public class SketchProject implements IProjectNature {
 	}
 
 	/** Returns a qualified name for the property relative to this plug-in */
-	public QualifiedName getPropertyName(String localName){
+	public QualifiedName getPropertyName(String localName) {
 		return new QualifiedName(ProcessingCore.PLUGIN_ID, localName);
 	}
 
@@ -223,7 +223,7 @@ public class SketchProject implements IProjectNature {
 	 * If there is an exception it will be reported and the project
 	 * will not persist.
 	 **/
-	public void setPersistentProperty(String localName, String value){
+	public void setPersistentProperty(String localName, String value) {
 		try{
 			this.project.setPersistentProperty(this.getPropertyName(localName), value);
 		} catch (CoreException e){
@@ -232,7 +232,7 @@ public class SketchProject implements IProjectNature {
 	}
 
 	/** Trigger a full build of the project being managed */
-	public void fullBuild(IProgressMonitor monitor) throws CoreException{
+	public void fullBuild(IProgressMonitor monitor) throws CoreException {
 		project.build(IncrementalProjectBuilder.FULL_BUILD, monitor);
 	}
 	
@@ -250,7 +250,7 @@ public class SketchProject implements IProjectNature {
 	}
 
 	/** Return the sketch's code folder or null if it cannot be retrieved */
-	public IFolder getDataFolder(){
+	public IFolder getDataFolder() {
 		try{
 			IFolder data = project.getFolder("data");
 			if(!data.exists())
@@ -262,12 +262,12 @@ public class SketchProject implements IProjectNature {
 		}
 	}
 	
-	public IFolder getAppletFolder(){
+	public IFolder getAppletFolder() {
 		return getAppletFolder(false);
 	}
 	
 	/** Return the sketch's code folder or null if it cannot be retrieved. */
-	public IFolder getAppletFolder(boolean delete){
+	public IFolder getAppletFolder(boolean delete) {
 		try{
 			IFolder applet = project.getFolder("applet");
 			if(delete && applet.exists()) applet.delete(true, null);
@@ -286,7 +286,7 @@ public class SketchProject implements IProjectNature {
 	 * Unfortunately, JDT requires the build folder to be in the project file system 
 	 * somewhere, so we can't hide it in a system temp folder like the PDE does.
 	 */
-	public IFolder getJavaBuildFolder(){
+	public IFolder getJavaBuildFolder() {
 		try {
 			IFolder preproc = getBuildFolder();
 			if(preproc != null){
@@ -309,7 +309,7 @@ public class SketchProject implements IProjectNature {
 	 * Unfortunately, JDT requires the build folder to be in the project file system 
 	 * somewhere, so we can't hide this in a system temp folder like the PDE does. 
 	 */
-	public IFolder getBuildFolder(){
+	public IFolder getBuildFolder() {
 		try {
 			IFolder tempBuildFolder = project.getFolder("generated");
 			if(!tempBuildFolder.exists())
@@ -330,7 +330,7 @@ public class SketchProject implements IProjectNature {
 	 * The main file being the *.pde file that shares the name of the sketch.
 	 *  
 	 */
-	public IFile getMainFile(){
+	public IFile getMainFile() {
 		IFile main = project.getFile(project.getName()+".pde");
 		return (main.isAccessible()) ? main : null;
 	}
@@ -419,7 +419,7 @@ public class SketchProject implements IProjectNature {
 	 * like -nowarn, so each preference that could set a warning is explicitly set to ignore.
 	 * If there is a way to simplify this, please file a bug and suggest a fix!
 	 */
-	public void ignoreWarnings(){
+	public void ignoreWarnings() {
 		Hashtable options = JavaCore.getOptions();
 		options.put(JavaCore.COMPILER_PB_ANNOTATION_SUPER_INTERFACE, JavaCore.IGNORE);
 		options.put(JavaCore.COMPILER_PB_AUTOBOXING, JavaCore.IGNORE);
@@ -485,11 +485,11 @@ public class SketchProject implements IProjectNature {
 	}
 
 	/** Getter for classes outside of this package */
-	public boolean wasLastBuildSuccessful(){
+	public boolean wasLastBuildSuccessful() {
 		return wasLastBuildSuccessful;
 	}
 	
-	public String getRenderer(){
+	public String getRenderer() {
 		return renderer;
 	}
 	
@@ -499,7 +499,7 @@ public class SketchProject implements IProjectNature {
 	}
 	
 	/** Return the sketch's width, or the default width if size() has not been specified */
-	public int getWidth(){
+	public int getWidth() {
 		return (sketch_width == -1) ? DEFAULT_WIDTH : sketch_width;
 	}
 
@@ -508,7 +508,7 @@ public class SketchProject implements IProjectNature {
 		return project.getName();
 	}
 	
-	public ArrayList<IPath> getLibraryPaths(){
+	public ArrayList<IPath> getLibraryPaths() {
 		return libraryPaths;
 	}
 		

@@ -54,7 +54,7 @@ public class ImportSketchWizard extends Wizard implements IImportWizard {
 	public void init(IWorkbench workbench, IStructuredSelection selection) {}
 
 	/** Initialize the single page and add it to the wizard. */
-	public void addPages(){
+	public void addPages() {
 		setWindowTitle("Import Sketch Wizard");
 		page = new ImportSketchWizardPage();
 		addPage(page);
@@ -77,7 +77,7 @@ public class ImportSketchWizard extends Wizard implements IImportWizard {
 		final IProjectDescription sketchDescription = ResourcesPlugin.getWorkspace().newProjectDescription(project.getName());
 		sketchDescription.setLocation(sketchPath);
 		
-		WorkspaceModifyOperation op = new WorkspaceModifyOperation(){
+		WorkspaceModifyOperation op = new WorkspaceModifyOperation() {
 			protected void execute(IProgressMonitor monitor) throws CoreException{
 				createNewProject(sketchDescription, project, monitor);
 			}
@@ -85,11 +85,11 @@ public class ImportSketchWizard extends Wizard implements IImportWizard {
 		
 		try{
 			getContainer().run(true, true, op);
-		} catch (InvocationTargetException e){
+		} catch (InvocationTargetException e) {
 			Throwable realException = e.getTargetException();
 			MessageDialog.openError(getShell(), "Error!", realException.getMessage());
 			return false;
-		} catch (InterruptedException e){ // "shut it down"
+		} catch (InterruptedException e) { // "shut it down"
 			return false;
 		}
 		return true;

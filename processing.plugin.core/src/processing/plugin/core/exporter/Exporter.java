@@ -46,17 +46,17 @@ public class Exporter {
 	 * 
 	 * @return boolean whether the export was successful
 	 */
-	public static boolean exportApplet(SketchProject sp){
+	public static boolean exportApplet(SketchProject sp) {
 		if (sp == null) return false;
 		if (!sp.getProject().isAccessible()) return false;
 
 		try{
 			sp.fullBuild(null);
-		} catch (CoreException e){
+		} catch (CoreException e) {
 			ProcessingCore.logError(e);
 			return false;
 		}
-		if (!sp.wasLastBuildSuccessful()){
+		if (!sp.wasLastBuildSuccessful()) {
 			ProcessingCore.logError("Could not export " + sp.getProject().getName() + 
 					". There were erros building the project.", null);
 			return false;
@@ -78,10 +78,10 @@ public class Exporter {
 		// Grab the Javadoc-style description from the main code		
 		String description ="";
 		String[] javadoc = ProcessingUtilities.match(codeContents, "/\\*{2,}(.*)\\*+/");
-		if (javadoc != null){
+		if (javadoc != null) {
 			StringBuffer dbuffer = new StringBuffer();
 			String[] pieces = ProcessingUtilities.split(javadoc[1], '\n');
-			for (String line : pieces){
+			for (String line : pieces) {
 				// if this line starts with * characters, remove em
 				String[] m = ProcessingUtilities.match(line, "^\\s*\\*+(.*)");
 				dbuffer.append(m != null ? m[1] : line);
@@ -95,10 +95,10 @@ public class Exporter {
 		// Get links for each copied code file
 		StringBuffer sources = new StringBuffer();
 		try{
-			for(IResource r : sp.getProject().members()){
+			for(IResource r : sp.getProject().members()) {
 				if(!(r instanceof IFile)) continue;
 				if(r.getName().startsWith(".")) continue;
-				if("pde".equalsIgnoreCase(r.getFileExtension())){
+				if("pde".equalsIgnoreCase(r.getFileExtension())) {
 					try{
 						r.copy(exportFolder.getFullPath().append(r.getName()), true, null);
 						sources.append("<a href=\"" + r.getName() + "\">" +
@@ -110,7 +110,7 @@ public class Exporter {
 					}
 				}
 			}
-		} catch (CoreException e){
+		} catch (CoreException e) {
 			ProcessingCore.logError(e); // problem getting members
 		}
 		
@@ -158,18 +158,18 @@ public class Exporter {
 	    
 		// add the contents of the code folder to the jar
 		IFolder codeFolder = sp.getCodeFolder();
-		if (codeFolder != null){
+		if (codeFolder != null) {
 			try{
-				for(IResource r : codeFolder.members()){
+				for(IResource r : codeFolder.members()) {
 					if(!(r instanceof IFile)) continue;
 					if(r.getName().startsWith(".")) continue;
 					if ("jar".equalsIgnoreCase(r.getFileExtension()) || 
-							"zip".equalsIgnoreCase(r.getFileExtension())){
+							"zip".equalsIgnoreCase(r.getFileExtension())) {
 						r.copy(exportFolder.getFullPath().append(r.getName()), true, null);
 	        			//System.out.println("Copied the file to " + exportFolder.getFullPath().toString() + " .");
 					}
 				}
-			} catch (CoreException e){
+			} catch (CoreException e) {
 				ProcessingCore.logError("Code Folder entries could not be included in export." +
 						"Export for " + sp.getProject().getName() + " may not function properly.", e);
 			}
@@ -182,8 +182,8 @@ public class Exporter {
 		
 		// add the library jar files to the folder and detect if opengl is in use
 		ArrayList<IPath> sketchLibraryImportPaths = sp.getLibraryPaths();
-		if(sketchLibraryImportPaths != null){
-			for(IPath path : sketchLibraryImportPaths){
+		if(sketchLibraryImportPaths != null) {
+			for(IPath path : sketchLibraryImportPaths) {
 				if (path.toOSString().equals(openglLibraryPath)) 
 					openglApplet = true;
 				
@@ -196,12 +196,12 @@ public class Exporter {
 //				HashMap<String,String> exportTable = ProcessingUtilities.readSettings(exportSettings);
 //				String appletList = (String) exportTable.get("applet");
 //				String exportList[] = null;
-//				if(appletList != null){
+//				if(appletList != null) {
 //					exportList = ProcessingUtilities.splitTokens(appletList, ", ");
 //				} else {
 //					exportList = libraryFolder.list();
 //				}
-//				for (String s : exportList){
+//				for (String s : exportList) {
 //					if (s.equals(".") || s.equals("..")) continue;
 //					
 //					s = ProcessingUtilities.trim(s);
@@ -213,7 +213,7 @@ public class Exporter {
 //					} else if (exportFile.isDirectory()) {
 //						ProcessingLog.logInfo("Ignoring sub-folder \"" + s + "\"");
 //					} else if ( exportFile.getName().toLowerCase().endsWith(".zip") ||
-//								exportFile.getName().toLowerCase().endsWith(".jar")){
+//								exportFile.getName().toLowerCase().endsWith(".jar")) {
 //						// the PDE checks for separate jar boolean, but if we're here we have
 //						// met the conditions that require it
 ////						File exportFile = new File(codeFolder, s);
@@ -236,7 +236,7 @@ public class Exporter {
 	 *
 	 * @return boolean always false
 	 */
-	public static boolean exportApplication(SketchProject sp){ 
+	public static boolean exportApplication(SketchProject sp) { 
 		ProcessingCore.logInfo("Could not export " + sp.getProject().getName() 
 				+ " because exporting applications has not been implemented.");
 		return false; 

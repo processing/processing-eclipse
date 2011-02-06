@@ -1,0 +1,45 @@
+Folder Structure
+-----
+Processing Plugin for Eclipse: the "feature" plugin, an xml document
+describing version numbers, component plugins, copyright and licensing
+info, etc, that wraps everything into one nice bundle for users to
+install.
+
+processing.plugin.appBundle: made with the "plugin from existing jars"
+wizard. contains the processing.app code that I could directly reuse,
+and its dependent code. the version number indicates what version of
+the p5 editor the jars came from
+
+processing.plugin.core: non-ui functionality. has a builder, the stub
+of the exporter, and a simple model for libraries. Also contains a
+static utility class of methods copied from the old Base and PApplet
+classes that were needed, but couldn't be reused without invoking
+swing UI that made Eclipse grumpy.
+
+processing.plugin.ui: all of the ui functionality. The editor, syntax
+highlighting, related utilities, launching (runner), the wizards, and
+the perspective are here.
+
+processing.plugin.updateSite contains some xml used by the Eclipse
+update and installer tools. It also contains compiled versions of the
+plugins for distribution, and opening site.xml in Eclipse is where the
+build happens.
+
+Project Lifecycle
+-----
+On creation or import, Processing sketch projects have a 'nature'
+attached to their metadata. The nature attaches a builder and sets up
+a Java project. When a change takes place in Eclipse through the UI, a
+delta object is passed to all the projects and builders. Thing of this
+delta like a diff output. In a Java project, the JDT figures out only
+what needs to be recompiled based on each change. Processing lacks the
+functionality to recompile individual segments of sketches, so instead
+we interrogate the delta to make sure it is resulting in a change that
+will affect our project before initiating a build. The overwhelming
+majority of deltas are ignored because they don't affect compilation,
+but we still end up frequently rebuilding the whole sketch.
+
+When the builder runs it checks for preprocessor errors, and if any
+are found it marks up the document accordingly and bails. If none are
+found, it puts all the preprocessed files into a JDT project managed
+internally, and lets the JDT take over compilation.

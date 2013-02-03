@@ -13,5 +13,4 @@ in the hope of some kind soul picking it up and continuing.
 Please contribute!
 
 
-Ben Fry
-3 February 2013
+Ben Fry, 3 February 2013
